@@ -36,7 +36,179 @@
   },
   "Onboarding": {
     "title": "Onboarding",
-    "stub": "Phase 2 — quiz d'onboarding (10 écrans)."
+    "back": "Retour",
+    "continue": "Continuer",
+    "generatePlan": "Générer mon plan 30 jours",
+    "generating": "Génération du plan…",
+    "optionalHint": "Optionnel — vous pouvez passer.",
+    "stepOf": "Étape {current} / {total}",
+    "errorGeneric": "Impossible de générer le plan. Réessayez.",
+    "errorIncomplete": "Complétez toutes les étapes avant de continuer.",
+    "planReadyTitle": "Votre plan d'entraînement exécutif",
+    "planSource": "Source : {source}",
+    "planMoreDays": "+ {count} autres jours dans votre plan",
+    "goDashboard": "Aller au tableau de bord",
+    "review": {
+      "name": "Prénom",
+      "goal": "Objectif",
+      "level": "Niveau",
+      "language": "Langue",
+      "primaryFear": "Peur principale",
+      "minutes": "Temps / jour",
+      "context": "Contexte",
+      "media": "Format"
+    },
+    "steps": {
+      "name": {
+        "title": "Comment vous appeler ?",
+        "subtitle": "On personnalisera votre plan d'entraînement exécutif.",
+        "placeholder": "Votre prénom"
+      },
+      "goal": {
+        "title": "Quel est votre objectif principal ?",
+        "subtitle": "Une priorité pour les 30 prochains jours."
+      },
+      "level": {
+        "title": "Où en êtes-vous aujourd'hui ?",
+        "subtitle": "Auto-évaluation honnête — pas de jugement."
+      },
+      "language": {
+        "title": "Langue d'entraînement ?",
+        "subtitle": "Les consignes et le feedback suivront cette langue."
+      },
+      "primaryFear": {
+        "title": "Quelle est votre peur principale ?",
+        "subtitle": "Celle qui vous freine le plus en prise de parole."
+      },
+      "fears": {
+        "title": "D'autres freins ?",
+        "subtitle": "Sélectionnez tout ce qui s'applique (optionnel)."
+      },
+      "minutes": {
+        "title": "Combien de temps par jour ?",
+        "subtitle": "Un rythme réaliste bat un plan ambitieux abandonné."
+      },
+      "context": {
+        "title": "Où parlez-vous le plus ?",
+        "subtitle": "On calibrera les scénarios sur ce terrain."
+      },
+      "media": {
+        "title": "Audio, vidéo, ou les deux ?",
+        "subtitle": "La caméra active le module posture (Phase 5)."
+      },
+      "review": {
+        "title": "Tout est bon ?",
+        "subtitle": "On génère votre plan d'entraînement exécutif sur 30 jours."
+      }
+    },
+    "options": {
+      "goal": {
+        "meetings": {
+          "label": "Réunions",
+          "description": "Comex, syncs, arbitrages sous pression"
+        },
+        "presentations": {
+          "label": "Présentations",
+          "description": "All-hands, conférences, decks live"
+        },
+        "investor_pitch": {
+          "label": "Pitch investisseurs",
+          "description": "Levées, board, due diligence orale"
+        },
+        "media": {
+          "label": "Media & interviews",
+          "description": "Presse, podcasts, prises de parole publiques"
+        }
+      },
+      "level": {
+        "beginner": {
+          "label": "Débutant",
+          "description": "Je me prépare beaucoup, je perds le fil souvent"
+        },
+        "intermediate": {
+          "label": "Intermédiaire",
+          "description": "Correct en réunion, fragile sous stress"
+        },
+        "advanced": {
+          "label": "Avancé",
+          "description": "Solide — je vise le niveau C-level"
+        }
+      },
+      "language": {
+        "fr": {
+          "label": "Français",
+          "description": "Exercices et feedback en français"
+        },
+        "en": {
+          "label": "English",
+          "description": "Exercises and feedback in English"
+        }
+      },
+      "fear": {
+        "stuttering": {
+          "label": "Bafouiller",
+          "description": "Hésitations, redémarrages, perte de fluidité"
+        },
+        "losing_thread": {
+          "label": "Perdre le fil",
+          "description": "Structure floue, digressions"
+        },
+        "filler_words": {
+          "label": "Tics de langage",
+          "description": "Euh, du coup, en fait, genre…"
+        },
+        "lack_of_authority": {
+          "label": "Manque d'autorité",
+          "description": "Ton faible, silences mal gérés, présence"
+        }
+      },
+      "minutes": {
+        "5": {
+          "label": "5 minutes",
+          "description": "Un micro-exercice ciblé par jour"
+        },
+        "10": {
+          "label": "10 minutes",
+          "description": "Rythme recommandé pour progresser"
+        },
+        "20": {
+          "label": "20 minutes",
+          "description": "Double exercice + feedback approfondi"
+        }
+      },
+      "context": {
+        "board": {
+          "label": "Comité / board",
+          "description": "Questions dures, temps chronométré"
+        },
+        "team": {
+          "label": "Équipe",
+          "description": "Syncs, feedback, décisions collectives"
+        },
+        "clients": {
+          "label": "Clients",
+          "description": "Négociation, persuasion, clarté"
+        },
+        "stage": {
+          "label": "Scène / keynote",
+          "description": "Présence, storytelling, rythme"
+        }
+      },
+      "media": {
+        "audio": {
+          "label": "Audio seul",
+          "description": "Focus voix, débit, structure"
+        },
+        "video": {
+          "label": "Vidéo",
+          "description": "Voix + posture / regard caméra"
+        },
+        "both": {
+          "label": "Les deux",
+          "description": "Alternance selon les jours"
+        }
+      }
+    }
   },
   "Dashboard": {
     "title": "Tableau de bord",

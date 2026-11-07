@@ -1,6 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { getTranslations } from "next-intl/server";
-import { PhaseStub } from "@/components/layout/phase-stub";
+import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
 export default async function OnboardingPage({
   params,
@@ -9,15 +8,6 @@ export default async function OnboardingPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("Onboarding");
-  const tCommon = await getTranslations("Common");
 
-  return (
-    <PhaseStub
-      title={t("title")}
-      description={t("stub")}
-      backHref="/"
-      backLabel={tCommon("back")}
-    />
-  );
+  return <OnboardingWizard />;
 }

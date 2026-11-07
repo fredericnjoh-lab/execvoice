@@ -6,17 +6,23 @@ Mobile-first web app for executive speaking practice (clarity, structure, C-leve
 
 ---
 
-## Phase 1 — status
+## Phase status
 
-Delivered:
-
+### Phase 1 ✅
 - Project scaffold + premium design tokens (navy / white / gold)
-- Supabase auth clients (browser, server, middleware) + login/signup UI
-- Postgres schema with RLS (`profiles`, `plans`, `exercises`, `sessions`, `streaks`) + storage bucket
-- Seed library: **42 exercises** (impromptu, pitch, board_qa, storytelling, articulation, posture — FR + EN)
-- i18n FR/EN with locale-prefixed routes
-- Route stubs for `/onboarding`, `/dashboard`, `/exercise/[id]`, `/session/[id]`, `/progress`, `/settings`
-- Editable AI prompts stub in `src/lib/prompts.ts` (used from Phase 2–3)
+- Supabase auth clients + login/signup UI
+- Postgres schema with RLS + storage bucket
+- Seed library: **42 exercises**
+- i18n FR/EN
+
+### Phase 2 ✅
+- Onboarding quiz — **10 screens**, 1 question each, progress bar
+- Profile persistence (`goal`, `level`, `language`, `fears`, `minutes_per_day`, `speaking_context`, `media_preference`)
+- 30-day executive plan generation:
+  - AI via OpenAI / Anthropic (`src/lib/prompts.ts`)
+  - Deterministic fallback if no API key / model failure
+- API: `POST /api/onboarding/complete`
+- Result screen → dashboard
 
 ---
 
@@ -44,7 +50,8 @@ Fill in your Supabase project URL + anon key. AI keys are needed from Phase 3.
 In the Supabase SQL editor, run in order:
 
 1. `supabase/migrations/001_initial_schema.sql`
-2. `supabase/seed/exercises.sql`
+2. `supabase/migrations/002_onboarding_extras.sql`
+3. `supabase/seed/exercises.sql`
 
 Auth redirect URL to allow: `http://localhost:3000/auth/callback`
 
@@ -85,6 +92,6 @@ Source of truth: `src/lib/seed/exercises.ts` → writes `supabase/seed/exercises
 
 ## Next
 
-**Phase 2** — onboarding quiz (10 screens) + AI 30-day plan generation.
+**Phase 3** — recording (MediaRecorder) + Whisper transcription + structured AI feedback.
 
-Awaiting your validation before starting Phase 2.
+Awaiting your validation before starting Phase 3.

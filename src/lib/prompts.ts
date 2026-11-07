@@ -1,6 +1,6 @@
 /**
  * Centralized AI prompts — edit here without touching API routes.
- * Used from Phase 3 onward (transcription analysis + plan generation).
+ * Phase 2: plan generation · Phase 3: transcription analysis.
  */
 
 export const PLAN_GENERATION_SYSTEM = `You are an executive communication coach for C-level leaders.

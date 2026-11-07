@@ -36,7 +36,179 @@
   },
   "Onboarding": {
     "title": "Onboarding",
-    "stub": "Phase 2 — onboarding quiz (10 screens)."
+    "back": "Back",
+    "continue": "Continue",
+    "generatePlan": "Generate my 30-day plan",
+    "generating": "Building your plan…",
+    "optionalHint": "Optional — you can skip.",
+    "stepOf": "Step {current} / {total}",
+    "errorGeneric": "Could not generate the plan. Please try again.",
+    "errorIncomplete": "Complete every step before continuing.",
+    "planReadyTitle": "Your executive training plan",
+    "planSource": "Source: {source}",
+    "planMoreDays": "+ {count} more days in your plan",
+    "goDashboard": "Go to dashboard",
+    "review": {
+      "name": "Name",
+      "goal": "Goal",
+      "level": "Level",
+      "language": "Language",
+      "primaryFear": "Main fear",
+      "minutes": "Time / day",
+      "context": "Context",
+      "media": "Format"
+    },
+    "steps": {
+      "name": {
+        "title": "What should we call you?",
+        "subtitle": "We'll personalize your executive training plan.",
+        "placeholder": "Your first name"
+      },
+      "goal": {
+        "title": "What's your primary goal?",
+        "subtitle": "One priority for the next 30 days."
+      },
+      "level": {
+        "title": "Where are you today?",
+        "subtitle": "Honest self-assessment — no judgment."
+      },
+      "language": {
+        "title": "Training language?",
+        "subtitle": "Prompts and feedback will follow this language."
+      },
+      "primaryFear": {
+        "title": "What's your biggest fear?",
+        "subtitle": "The one that holds you back most when speaking."
+      },
+      "fears": {
+        "title": "Any other blockers?",
+        "subtitle": "Select all that apply (optional)."
+      },
+      "minutes": {
+        "title": "How much time per day?",
+        "subtitle": "A realistic rhythm beats an abandoned ambitious plan."
+      },
+      "context": {
+        "title": "Where do you speak most?",
+        "subtitle": "We'll calibrate scenarios to that arena."
+      },
+      "media": {
+        "title": "Audio, video, or both?",
+        "subtitle": "Camera unlocks the posture module (Phase 5)."
+      },
+      "review": {
+        "title": "Look good?",
+        "subtitle": "We'll generate your 30-day executive training plan."
+      }
+    },
+    "options": {
+      "goal": {
+        "meetings": {
+          "label": "Meetings",
+          "description": "Exec syncs, trade-offs under pressure"
+        },
+        "presentations": {
+          "label": "Presentations",
+          "description": "All-hands, conferences, live decks"
+        },
+        "investor_pitch": {
+          "label": "Investor pitch",
+          "description": "Fundraising, board, oral diligence"
+        },
+        "media": {
+          "label": "Media & interviews",
+          "description": "Press, podcasts, public remarks"
+        }
+      },
+      "level": {
+        "beginner": {
+          "label": "Beginner",
+          "description": "I over-prepare and often lose the thread"
+        },
+        "intermediate": {
+          "label": "Intermediate",
+          "description": "Fine in meetings, fragile under stress"
+        },
+        "advanced": {
+          "label": "Advanced",
+          "description": "Solid — aiming for true C-level polish"
+        }
+      },
+      "language": {
+        "fr": {
+          "label": "Français",
+          "description": "Exercises and feedback in French"
+        },
+        "en": {
+          "label": "English",
+          "description": "Exercises and feedback in English"
+        }
+      },
+      "fear": {
+        "stuttering": {
+          "label": "Stumbling",
+          "description": "Hesitations, restarts, broken fluency"
+        },
+        "losing_thread": {
+          "label": "Losing the thread",
+          "description": "Fuzzy structure, digressions"
+        },
+        "filler_words": {
+          "label": "Filler words",
+          "description": "Uh, like, basically, you know…"
+        },
+        "lack_of_authority": {
+          "label": "Lack of authority",
+          "description": "Weak tone, poor pauses, presence"
+        }
+      },
+      "minutes": {
+        "5": {
+          "label": "5 minutes",
+          "description": "One focused micro-exercise a day"
+        },
+        "10": {
+          "label": "10 minutes",
+          "description": "Recommended pace to improve"
+        },
+        "20": {
+          "label": "20 minutes",
+          "description": "Double exercise + deeper feedback"
+        }
+      },
+      "context": {
+        "board": {
+          "label": "Board / committee",
+          "description": "Hard questions, timed answers"
+        },
+        "team": {
+          "label": "Team",
+          "description": "Syncs, feedback, collective decisions"
+        },
+        "clients": {
+          "label": "Clients",
+          "description": "Negotiation, persuasion, clarity"
+        },
+        "stage": {
+          "label": "Stage / keynote",
+          "description": "Presence, storytelling, pace"
+        }
+      },
+      "media": {
+        "audio": {
+          "label": "Audio only",
+          "description": "Focus on voice, pace, structure"
+        },
+        "video": {
+          "label": "Video",
+          "description": "Voice + posture / camera gaze"
+        },
+        "both": {
+          "label": "Both",
+          "description": "Alternate by day"
+        }
+      }
+    }
   },
   "Dashboard": {
     "title": "Dashboard",
