@@ -1,0 +1,68 @@
+{
+  "Meta": {
+    "title": "ExecVoice — Parlez comme un CEO",
+    "description": "Entraînement à la prise de parole pour cadres : clarté, structure, vocabulaire exécutif, confiance."
+  },
+  "Brand": {
+    "name": "ExecVoice",
+    "tagline": "La voix des dirigeants"
+  },
+  "Nav": {
+    "dashboard": "Tableau de bord",
+    "progress": "Progression",
+    "settings": "Réglages",
+    "login": "Connexion",
+    "signup": "Créer un compte",
+    "logout": "Déconnexion"
+  },
+  "Home": {
+    "headline": "Parlez comme un CEO.",
+    "sub": "Entraînez clarté, structure et autorité — 5 à 20 minutes par jour.",
+    "ctaStart": "Commencer l'entraînement",
+    "ctaLogin": "J'ai déjà un compte"
+  },
+  "Auth": {
+    "loginTitle": "Connexion",
+    "signupTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "name": "Prénom",
+    "submitLogin": "Se connecter",
+    "submitSignup": "Créer mon compte",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?",
+    "errorGeneric": "Une erreur est survenue. Réessayez.",
+    "errorMissingConfig": "Supabase n'est pas configuré. Copiez .env.example vers .env.local."
+  },
+  "Onboarding": {
+    "title": "Onboarding",
+    "stub": "Phase 2 — quiz d'onboarding (10 écrans)."
+  },
+  "Dashboard": {
+    "title": "Tableau de bord",
+    "stub": "Phase 4 — exercice du jour, streak, scores."
+  },
+  "Exercise": {
+    "title": "Exercice",
+    "stub": "Phase 3 — enregistrement + feedback IA."
+  },
+  "Session": {
+    "title": "Session",
+    "stub": "Phase 3 — détail du feedback."
+  },
+  "Progress": {
+    "title": "Progression",
+    "stub": "Phase 4 — courbes et historique."
+  },
+  "Settings": {
+    "title": "Réglages",
+    "language": "Langue",
+    "stub": "Profil et préférences."
+  },
+  "Common": {
+    "loading": "Chargement…",
+    "back": "Retour",
+    "continue": "Continuer",
+    "save": "Enregistrer"
+  }
+}

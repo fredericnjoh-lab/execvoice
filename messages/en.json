@@ -1,0 +1,68 @@
+{
+  "Meta": {
+    "title": "ExecVoice — Speak like a CEO",
+    "description": "Executive speaking training: clarity, structure, C-level vocabulary, confidence."
+  },
+  "Brand": {
+    "name": "ExecVoice",
+    "tagline": "The voice of leadership"
+  },
+  "Nav": {
+    "dashboard": "Dashboard",
+    "progress": "Progress",
+    "settings": "Settings",
+    "login": "Log in",
+    "signup": "Create account",
+    "logout": "Log out"
+  },
+  "Home": {
+    "headline": "Speak like a CEO.",
+    "sub": "Train clarity, structure, and authority — 5 to 20 minutes a day.",
+    "ctaStart": "Start training",
+    "ctaLogin": "I already have an account"
+  },
+  "Auth": {
+    "loginTitle": "Log in",
+    "signupTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "name": "First name",
+    "submitLogin": "Log in",
+    "submitSignup": "Create my account",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already have an account?",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorMissingConfig": "Supabase is not configured. Copy .env.example to .env.local."
+  },
+  "Onboarding": {
+    "title": "Onboarding",
+    "stub": "Phase 2 — onboarding quiz (10 screens)."
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "stub": "Phase 4 — today's exercise, streak, scores."
+  },
+  "Exercise": {
+    "title": "Exercise",
+    "stub": "Phase 3 — recording + AI feedback."
+  },
+  "Session": {
+    "title": "Session",
+    "stub": "Phase 3 — feedback detail."
+  },
+  "Progress": {
+    "title": "Progress",
+    "stub": "Phase 4 — curves and history."
+  },
+  "Settings": {
+    "title": "Settings",
+    "language": "Language",
+    "stub": "Profile and preferences."
+  },
+  "Common": {
+    "loading": "Loading…",
+    "back": "Back",
+    "continue": "Continue",
+    "save": "Save"
+  }
+}

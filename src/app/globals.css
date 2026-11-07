@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Premium executive palette */
+  --navy: #0b1f3a;
+  --navy-light: #16325a;
+  --navy-muted: #3a516e;
+  --gold: #c9a227;
+  --gold-muted: #dbb84a;
+  --cream: #f7f5f0;
+  --paper: #ffffff;
+  --background: var(--cream);
+  --foreground: var(--navy);
+
+  /* Atmospheric wash (not flat white) */
+  --hero-wash: radial-gradient(
+      120% 80% at 10% 0%,
+      rgba(201, 162, 39, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      90% 70% at 100% 10%,
+      rgba(11, 31, 58, 0.08),
+      transparent 50%
+    ),
+    linear-gradient(180deg, #fbfaf7 0%, #f0ece4 100%);
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-h-dvh bg-cream text-navy antialiased;
+    background-image: var(--hero-wash);
+    background-attachment: fixed;
+    font-family: var(--font-body), ui-sans-serif, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display), ui-serif, Georgia, serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
