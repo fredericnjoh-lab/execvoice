@@ -24,6 +24,13 @@ Mobile-first web app for executive speaking practice (clarity, structure, C-leve
 - API: `POST /api/onboarding/complete`
 - Result screen → dashboard
 
+### Phase 3 ✅
+- Exercise player: consigne + prep/speak timers + MediaRecorder (audio/vidéo)
+- `POST /api/sessions/analyze` — Whisper transcription + structured AI feedback
+- Heuristic fallback (fillers, WPM, scores) when AI keys missing
+- Feedback cards on `/session/[id]` (6 axes, tics, débit, rewrite CEO, tip)
+- Demo shortcut: `/[locale]/exercise/demo`
+
 ---
 
 ## Setup
@@ -92,6 +99,6 @@ Source of truth: `src/lib/seed/exercises.ts` → writes `supabase/seed/exercises
 
 ## Next
 
-**Phase 3** — recording (MediaRecorder) + Whisper transcription + structured AI feedback.
+**Phase 4** — dashboard (exercice du jour, streak, score), progression curves.
 
-Awaiting your validation before starting Phase 3.
+Awaiting your validation before starting Phase 4.

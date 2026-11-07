@@ -212,15 +212,70 @@
   },
   "Dashboard": {
     "title": "Dashboard",
-    "stub": "Phase 4 — today's exercise, streak, scores."
+    "stub": "Phase 4 will add streak and scores. Meanwhile, try an exercise.",
+    "tryExercise": "Try an exercise"
   },
   "Exercise": {
     "title": "Exercise",
-    "stub": "Phase 3 — recording + AI feedback."
+    "exit": "Exit",
+    "audio": "Audio",
+    "video": "Video",
+    "startPrep": "Start preparation",
+    "startRecord": "Start recording",
+    "stop": "Stop",
+    "retake": "Retake",
+    "getFeedback": "Get my feedback",
+    "readyPrompt": "Ready — tap to speak.",
+    "notFound": "Exercise not found.",
+    "phase": {
+      "prep": "Prep",
+      "ready": "Ready",
+      "recording": "Speaking",
+      "review": "Review",
+      "uploading": "Analyzing…"
+    },
+    "types": {
+      "impromptu": "Impromptu",
+      "pitch": "Executive pitch",
+      "board_qa": "Board Q&A",
+      "storytelling": "Storytelling",
+      "articulation": "Articulation",
+      "posture": "Posture"
+    },
+    "errors": {
+      "permission": "Allow microphone / camera to continue.",
+      "analyze": "Analysis failed. Please try again."
+    }
   },
   "Session": {
-    "title": "Session",
-    "stub": "Phase 3 — feedback detail."
+    "title": "Feedback",
+    "loading": "Loading feedback…",
+    "notFound": "Session not found.",
+    "backDashboard": "Dashboard",
+    "retry": "Retry exercise",
+    "overallScore": "Overall score",
+    "source": "Analysis: {source}",
+    "axesTitle": "Six executive axes",
+    "axes": {
+      "clarity": "Clarity",
+      "structure": "Structure",
+      "concision": "Concision",
+      "vocabulary": "Vocabulary",
+      "confidence": "Confidence",
+      "impact": "Impact"
+    },
+    "wpmTitle": "Speaking rate",
+    "wpmTarget": "Target {low}–{high} wpm",
+    "wpmUnit": "wpm",
+    "fillersTitle": "Filler words",
+    "fillersNone": "No fillers detected — strong control.",
+    "weakTitle": "Weak phrasing",
+    "weakSubtitle": "C-level replacements",
+    "weakNone": "Vocabulary already solid.",
+    "ceoTitle": "CEO rewrite",
+    "tipTitle": "Tip for next session",
+    "transcriptTitle": "Transcript",
+    "transcriptDemo": "Demo transcript (Whisper not configured or no file)."
   },
   "Progress": {
     "title": "Progress",

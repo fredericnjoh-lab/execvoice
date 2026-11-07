@@ -212,15 +212,70 @@
   },
   "Dashboard": {
     "title": "Tableau de bord",
-    "stub": "Phase 4 — exercice du jour, streak, scores."
+    "stub": "Phase 4 ajoutera streak et scores. En attendant, lancez un exercice.",
+    "tryExercise": "Essayer un exercice"
   },
   "Exercise": {
     "title": "Exercice",
-    "stub": "Phase 3 — enregistrement + feedback IA."
+    "exit": "Quitter",
+    "audio": "Audio",
+    "video": "Vidéo",
+    "startPrep": "Démarrer la préparation",
+    "startRecord": "Commencer l'enregistrement",
+    "stop": "Terminer",
+    "retake": "Recommencer",
+    "getFeedback": "Obtenir mon feedback",
+    "readyPrompt": "Prêt — appuyez pour parler.",
+    "notFound": "Exercice introuvable.",
+    "phase": {
+      "prep": "Préparation",
+      "ready": "Prêt",
+      "recording": "Parole",
+      "review": "Relecture",
+      "uploading": "Analyse en cours…"
+    },
+    "types": {
+      "impromptu": "Impromptu",
+      "pitch": "Pitch exécutif",
+      "board_qa": "Board Q&A",
+      "storytelling": "Storytelling",
+      "articulation": "Articulation",
+      "posture": "Posture"
+    },
+    "errors": {
+      "permission": "Autorisez le micro / la caméra pour continuer.",
+      "analyze": "Analyse impossible. Réessayez."
+    }
   },
   "Session": {
-    "title": "Session",
-    "stub": "Phase 3 — détail du feedback."
+    "title": "Feedback",
+    "loading": "Chargement du feedback…",
+    "notFound": "Session introuvable.",
+    "backDashboard": "Tableau de bord",
+    "retry": "Refaire l'exercice",
+    "overallScore": "Score global",
+    "source": "Analyse : {source}",
+    "axesTitle": "Six axes exécutifs",
+    "axes": {
+      "clarity": "Clarté",
+      "structure": "Structure",
+      "concision": "Concision",
+      "vocabulary": "Vocabulaire",
+      "confidence": "Confiance",
+      "impact": "Impact"
+    },
+    "wpmTitle": "Débit",
+    "wpmTarget": "Cible {low}–{high} mots/min",
+    "wpmUnit": "mots/min",
+    "fillersTitle": "Tics de langage",
+    "fillersNone": "Aucun tic détecté — belle maîtrise.",
+    "weakTitle": "Formulations faibles",
+    "weakSubtitle": "Remplacements niveau C-level",
+    "weakNone": "Vocabulaire déjà solide.",
+    "ceoTitle": "Version CEO",
+    "tipTitle": "Conseil pour la prochaine session",
+    "transcriptTitle": "Transcription",
+    "transcriptDemo": "Transcript de démo (Whisper non configuré ou pas de fichier)."
   },
   "Progress": {
     "title": "Progression",
