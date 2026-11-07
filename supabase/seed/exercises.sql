@@ -1,7 +1,9 @@
 -- ExecVoice exercise seed (42 rows)
 -- Idempotent: clears library then re-inserts (safe for empty / seed-only tables).
 
-truncate table public.exercises restart identity cascade;
+-- Prefer DELETE over TRUNCATE … CASCADE so sessions that reference
+-- exercises keep their rows (FK is ON DELETE SET NULL).
+delete from public.exercises;
 
 insert into public.exercises
   (type, title, prompt, duration_s, prep_s, difficulty, language, tips)
