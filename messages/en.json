@@ -260,6 +260,14 @@
     "errors": {
       "permission": "Allow microphone / camera to continue.",
       "analyze": "Analysis failed. Please try again."
+    },
+    "postureHint": "Video mode: live posture analysis (alignment, gaze, hands).",
+    "posture": {
+      "title": "Live posture",
+      "loading": "Loading MediaPipe…",
+      "alignment": "Alignment",
+      "eye": "Gaze",
+      "hands": "Hands"
     }
   },
   "Session": {
@@ -290,7 +298,13 @@
     "ceoTitle": "CEO rewrite",
     "tipTitle": "Tip for next session",
     "transcriptTitle": "Transcript",
-    "transcriptDemo": "Demo transcript (Whisper not configured or no file)."
+    "transcriptDemo": "Demo transcript (Whisper not configured or no file).",
+    "postureTitle": "Camera posture",
+    "posture": {
+      "alignment": "Alignment",
+      "eye": "Gaze",
+      "hands": "Hands"
+    }
   },
   "Progress": {
     "title": "Progress",

@@ -167,6 +167,37 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
         </CardContent>
       </Card>
 
+      {/* Posture (video sessions) */}
+      {feedback.posture ? (
+        <Card className="animate-fade-up [animation-delay:240ms]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">{t("postureTitle")}</CardTitle>
+            <CardDescription>{feedback.posture.notes}</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-3 gap-3">
+            {(
+              [
+                ["alignment", feedback.posture.head_shoulder_alignment],
+                ["eye", feedback.posture.eye_contact],
+                ["hands", feedback.posture.hands_visible],
+              ] as const
+            ).map(([key, value]) => (
+              <div
+                key={key}
+                className="rounded-lg border border-navy/8 bg-cream/60 px-2 py-2 text-center"
+              >
+                <p className="text-[10px] uppercase tracking-wide text-navy/45">
+                  {t(`posture.${key}`)}
+                </p>
+                <p className={cn("font-display text-2xl font-semibold", scoreColor(value))}>
+                  {value}
+                </p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
       {/* Tip */}
       <Card className="animate-fade-up [animation-delay:260ms] bg-navy text-white">
         <CardHeader className="pb-2">

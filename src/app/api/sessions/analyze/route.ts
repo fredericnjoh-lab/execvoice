@@ -3,9 +3,33 @@ import { analyzeTranscript } from "@/lib/analysis/analyze-session";
 import { transcribeWithWhisper } from "@/lib/analysis/transcribe";
 import { getExerciseById } from "@/lib/exercises/get-exercise";
 import { createClient } from "@/lib/supabase/server";
+import type { PostureFeedback, SessionFeedback } from "@/lib/types/database";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+function parsePosture(raw: FormDataEntryValue | null): PostureFeedback | null {
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  try {
+    const data = JSON.parse(raw) as Partial<PostureFeedback>;
+    if (
+      typeof data.head_shoulder_alignment !== "number" ||
+      typeof data.eye_contact !== "number" ||
+      typeof data.hands_visible !== "number" ||
+      typeof data.notes !== "string"
+    ) {
+      return null;
+    }
+    return {
+      head_shoulder_alignment: Math.round(data.head_shoulder_alignment),
+      eye_contact: Math.round(data.eye_contact),
+      hands_visible: Math.round(data.hands_visible),
+      notes: data.notes.slice(0, 400),
+    };
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Accepts multipart form:
@@ -14,6 +38,7 @@ export const maxDuration = 60;
  * - exercise_id: string
  * - duration_s: number
  * - media_kind: audio | video
+ * - posture?: JSON string (client MediaPipe scores)
  */
 export async function POST(request: Request) {
   try {
@@ -24,6 +49,7 @@ export async function POST(request: Request) {
       | "audio"
       | "video";
     const providedTranscript = String(form.get("transcript") || "").trim();
+    const posture = parsePosture(form.get("posture"));
     const file = form.get("file");
 
     if (!exerciseId || !duration_s || duration_s < 1) {
@@ -70,6 +96,11 @@ export async function POST(request: Request) {
       duration_s,
       transcript,
     });
+
+    const feedback: SessionFeedback = {
+      ...analysis.feedback,
+      ...(posture ? { posture } : {}),
+    };
 
     const supabaseConfigured =
       Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -119,7 +150,7 @@ export async function POST(request: Request) {
             transcript,
             scores: analysis.scores,
             feedback: {
-              ...analysis.feedback,
+              ...feedback,
               analysis_source: analysis.source,
               transcript_source: transcriptSource,
               exercise_snapshot: {
@@ -158,7 +189,7 @@ export async function POST(request: Request) {
       transcript,
       transcript_source: transcriptSource,
       scores: analysis.scores,
-      feedback: analysis.feedback,
+      feedback,
       analysis_source: analysis.source,
       media_url,
       exercise: {

@@ -37,6 +37,11 @@ Mobile-first web app for executive speaking practice (clarity, structure, C-leve
 - Bottom nav mobile (dashboard / progress / settings)
 - Mode démo sans auth (exercice du jour depuis le seed)
 
+### Phase 5 ✅
+- Posture caméra client-side via MediaPipe Pose + FaceLandmarker
+- HUD live (alignement tête/épaules, regard caméra, mains visibles)
+- Scores posture fusionnés dans le feedback session
+
 ---
 
 ## Setup
@@ -103,8 +108,17 @@ Source of truth: `src/lib/seed/exercises.ts` → writes `supabase/seed/exercises
 
 ---
 
-## Next
+## Posture (Phase 5)
 
-**Phase 5** (optionnel) — module posture caméra (MediaPipe Pose / FaceMesh).
+Requires **video** mode (forced for `posture` exercises). Models load from CDN on first use:
 
-Awaiting your validation before starting Phase 5.
+- WASM: jsDelivr `@mediapipe/tasks-vision@1.2.2`
+- Pose lite + Face Landmarker (Google Storage)
+
+If MediaPipe fails to load, the speaking analysis still completes without posture scores.
+
+---
+
+## Done
+
+Phases 1–5 are complete. Next improvements could include richer dashboard charts, push reminders, or team workspaces.

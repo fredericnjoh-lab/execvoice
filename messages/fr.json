@@ -260,6 +260,14 @@
     "errors": {
       "permission": "Autorisez le micro / la caméra pour continuer.",
       "analyze": "Analyse impossible. Réessayez."
+    },
+    "postureHint": "Mode vidéo : analyse posture en direct (alignement, regard, mains).",
+    "posture": {
+      "title": "Posture live",
+      "loading": "Chargement MediaPipe…",
+      "alignment": "Alignement",
+      "eye": "Regard",
+      "hands": "Mains"
     }
   },
   "Session": {
@@ -290,7 +298,13 @@
     "ceoTitle": "Version CEO",
     "tipTitle": "Conseil pour la prochaine session",
     "transcriptTitle": "Transcription",
-    "transcriptDemo": "Transcript de démo (Whisper non configuré ou pas de fichier)."
+    "transcriptDemo": "Transcript de démo (Whisper non configuré ou pas de fichier).",
+    "postureTitle": "Posture caméra",
+    "posture": {
+      "alignment": "Alignement",
+      "eye": "Regard",
+      "hands": "Mains"
+    }
   },
   "Progress": {
     "title": "Progression",

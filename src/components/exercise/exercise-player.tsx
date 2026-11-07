@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Loader2, Mic, Square, Video, RotateCcw, Send } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { PostureHud } from "@/components/exercise/posture-hud";
 import { TimerRing } from "@/components/exercise/timer-ring";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useMediaRecorder, type MediaKind } from "@/hooks/use-media-recorder";
+import { usePostureAnalyzer } from "@/hooks/use-posture-analyzer";
 import { Link, useRouter } from "@/i18n/navigation";
-import type { Exercise } from "@/lib/types/database";
+import type { Exercise, PostureFeedback } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
 type Phase = "intro" | "prep" | "ready" | "recording" | "review" | "uploading";
@@ -26,16 +28,19 @@ export function ExercisePlayer({
   preferredKind = exercise.type === "posture" ? "video" : "audio",
 }: ExercisePlayerProps) {
   const t = useTranslations("Exercise");
+  const locale = useLocale() as "fr" | "en";
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("intro");
   const [kind, setKind] = useState<MediaKind>(preferredKind);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const recordedSecondsRef = useRef(0);
+  const postureResultRef = useRef<PostureFeedback | null>(null);
 
   const prep = useCountdown(exercise.prep_s);
   const speak = useCountdown(exercise.duration_s);
   const recorder = useMediaRecorder({ kind });
+  const posture = usePostureAnalyzer({ language: locale });
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Attach live preview
@@ -60,12 +65,29 @@ export function ExercisePlayer({
     }
   }, [phase, t]);
 
+  function finishRecording(elapsed: number) {
+    recordedSecondsRef.current = elapsed;
+    recorder.stop();
+    if (kind === "video") {
+      postureResultRef.current = posture.stop();
+    }
+    setPhase("review");
+  }
+
   async function begin() {
     setError(null);
+    postureResultRef.current = null;
+    posture.reset();
     const ok = await recorder.ensurePermission();
     if (!ok) {
       setError(t("errors.permission"));
       return;
+    }
+    if (kind === "video") {
+      // Warm MediaPipe while user preps.
+      void posture.ensureLoaded().catch(() => {
+        /* non-blocking — analysis becomes optional */
+      });
     }
     if (exercise.prep_s > 0) {
       setPhase("prep");
@@ -80,22 +102,25 @@ export function ExercisePlayer({
     recordedSecondsRef.current = 0;
     await recorder.start();
     setPhase("recording");
+
+    if (kind === "video" && videoRef.current) {
+      void posture.start(videoRef.current);
+    }
+
     speak.start(exercise.duration_s, () => {
-      recorder.stop();
-      recordedSecondsRef.current = exercise.duration_s;
-      setPhase("review");
+      finishRecording(exercise.duration_s);
     });
   }
 
   function stopEarly() {
-    const elapsed = exercise.duration_s - speak.seconds;
-    recordedSecondsRef.current = Math.max(3, elapsed);
+    const elapsed = Math.max(3, exercise.duration_s - speak.seconds);
     speak.pause();
-    recorder.stop();
-    setPhase("review");
+    finishRecording(elapsed);
   }
 
   function retake() {
+    posture.reset();
+    postureResultRef.current = null;
     recorder.reset();
     prep.reset(exercise.prep_s);
     speak.reset(exercise.duration_s);
@@ -104,11 +129,11 @@ export function ExercisePlayer({
   }
 
   function submit() {
-    if (!recorder.blob && phase === "review") {
-      // Allow submit without blob — API will use demo transcript.
-    }
     setPhase("uploading");
     setError(null);
+
+    // Prefer latest stop() result; fall back to hook state.
+    const posturePayload = postureResultRef.current || posture.result;
 
     startTransition(async () => {
       try {
@@ -120,11 +145,10 @@ export function ExercisePlayer({
         );
         form.set("media_kind", kind);
         if (recorder.blob) {
-          form.set(
-            "file",
-            recorder.blob,
-            `take.${kind === "video" ? "webm" : "webm"}`
-          );
+          form.set("file", recorder.blob, "take.webm");
+        }
+        if (kind === "video" && posturePayload) {
+          form.set("posture", JSON.stringify(posturePayload));
         }
 
         const res = await fetch("/api/sessions/analyze", {
@@ -138,7 +162,6 @@ export function ExercisePlayer({
           return;
         }
 
-        // Cache for local-* session ids (no DB).
         try {
           sessionStorage.setItem(
             LOCAL_SESSION_KEY,
@@ -159,6 +182,9 @@ export function ExercisePlayer({
       }
     });
   }
+
+  const showVideoShell =
+    kind === "video" || (phase === "review" && Boolean(recorder.previewUrl));
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-5 pb-8 pt-4">
@@ -185,9 +211,11 @@ export function ExercisePlayer({
         {exercise.tips ? (
           <p className="mt-2 text-xs text-navy/45">{exercise.tips}</p>
         ) : null}
+        {kind === "video" ? (
+          <p className="mt-2 text-xs text-navy/50">{t("postureHint")}</p>
+        ) : null}
       </div>
 
-      {/* Media kind toggle (except forced posture video) */}
       {phase === "intro" && exercise.type !== "posture" ? (
         <div className="mt-6 flex gap-2">
           <Button
@@ -212,9 +240,8 @@ export function ExercisePlayer({
       ) : null}
 
       <section className="mt-8 flex flex-1 flex-col items-center">
-        {/* Live / playback preview */}
-        {(kind === "video" || recorder.previewUrl) && (
-          <div className="mb-6 w-full overflow-hidden rounded-xl border border-navy/10 bg-navy/95 aspect-video">
+        {showVideoShell && (
+          <div className="relative mb-6 w-full overflow-hidden rounded-xl border border-navy/10 bg-navy/95 aspect-video">
             {phase === "review" && recorder.previewUrl ? (
               kind === "video" ? (
                 <video
@@ -237,9 +264,38 @@ export function ExercisePlayer({
               />
             ) : (
               <div className="flex h-full items-center justify-center text-gold/80">
-                <Mic className={cn("h-10 w-10", phase === "recording" && "animate-pulse")} />
+                <Mic
+                  className={cn(
+                    "h-10 w-10",
+                    phase === "recording" && "animate-pulse"
+                  )}
+                />
               </div>
             )}
+
+            {kind === "video" &&
+            (phase === "recording" ||
+              phase === "prep" ||
+              phase === "ready" ||
+              posture.status === "loading") ? (
+              <PostureHud
+                live={posture.live}
+                status={posture.status}
+                labels={{
+                  title: t("posture.title"),
+                  loading: t("posture.loading"),
+                  alignment: t("posture.alignment"),
+                  eye: t("posture.eye"),
+                  hands: t("posture.hands"),
+                }}
+              />
+            ) : null}
+
+            {phase === "review" && kind === "video" && postureResultRef.current ? (
+              <div className="absolute inset-x-0 bottom-0 bg-navy/80 px-3 py-2 text-xs text-white/85">
+                {postureResultRef.current.notes}
+              </div>
+            ) : null}
           </div>
         )}
 
@@ -283,13 +339,23 @@ export function ExercisePlayer({
           </Button>
         )}
         {phase === "ready" && (
-          <Button variant="gold" size="lg" className="w-full" onClick={startRecording}>
+          <Button
+            variant="gold"
+            size="lg"
+            className="w-full"
+            onClick={startRecording}
+          >
             <Mic className="h-4 w-4" />
             {t("startRecord")}
           </Button>
         )}
         {phase === "recording" && (
-          <Button variant="default" size="lg" className="w-full" onClick={stopEarly}>
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full"
+            onClick={stopEarly}
+          >
             <Square className="h-4 w-4" />
             {t("stop")}
           </Button>
@@ -310,7 +376,12 @@ export function ExercisePlayer({
               )}
               {t("getFeedback")}
             </Button>
-            <Button variant="outline" size="lg" className="w-full" onClick={retake}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full"
+              onClick={retake}
+            >
               <RotateCcw className="h-4 w-4" />
               {t("retake")}
             </Button>
