@@ -21,6 +21,81 @@
     "ctaStart": "Commencer l'entraînement",
     "ctaLogin": "J'ai déjà un compte"
   },
+  "Landing": {
+    "hero": {
+      "title": "Parlez comme on vous écoute en comité de direction",
+      "sub": "Du brouillon mental au discours clair — en 5 à 20 minutes par jour.",
+      "cta": "Évaluer mon niveau en 2 min"
+    },
+    "proof": {
+      "days": "Plan d'entraînement exécutif",
+      "axes": "Axes de feedback IA",
+      "eval": "Pour cadrer votre point de départ"
+    },
+    "beforeAfter": {
+      "title": "Du flou à la phrase qui tranche",
+      "sub": "Même idée. Autre niveau d'autorité.",
+      "beforeLabel": "Avant",
+      "afterLabel": "Version C-level",
+      "beforeText": "Euh donc du coup je pense que notre priorité ce trimestre c'est en fait d'accélérer l'acquisition. On a un peu de retard mais voilà on va essayer de rattraper.",
+      "afterText": "Notre priorité n°1 ce trimestre : accélérer l'acquisition. Nous comblons un retard de pipeline avec trois leviers — outbound ciblé, partenariats, et cycle de vente raccourci."
+    },
+    "method": {
+      "title": "Une méthode en quatre temps",
+      "sub": "Une question claire, un exercice chronométré, un feedback immédiat.",
+      "step": "Étape {n}",
+      "steps": {
+        "1": {
+          "title": "Diagnostiquer",
+          "body": "Objectif, peurs, rythme : un plan 30 jours calibré sur vous."
+        },
+        "2": {
+          "title": "S'exercer",
+          "body": "Impromptu, pitch, board Q&A, storytelling — chrono et caméra."
+        },
+        "3": {
+          "title": "Mesurer",
+          "body": "Six axes, débit, tics, reformulations C-level."
+        },
+        "4": {
+          "title": "Ancrer",
+          "body": "Streak, progression, un conseil actionnable par session."
+        }
+      }
+    },
+    "demo": {
+      "title": "Le feedback, comme un coach en poche",
+      "sub": "Enregistrez. Recevez la version « comme un CEO l'aurait dite ».",
+      "b1": "Transcription + scores /100",
+      "b2": "Tics détectés et débit ciblé 130–160",
+      "b3": "Posture caméra (alignement, regard, mains)"
+    },
+    "testimonials": {
+      "title": "Ils parlent autrement",
+      "items": {
+        "1": {
+          "quote": "En board, j'ouvre maintenant par la conclusion. Les questions ont changé de ton.",
+          "name": "Camille R.",
+          "role": "VP Sales"
+        },
+        "2": {
+          "quote": "Les tics ont chuté. Le silence est devenu un outil, pas un trou.",
+          "name": "Marc D.",
+          "role": "CFO"
+        },
+        "3": {
+          "quote": "Le rewrite CEO m'a montré l'écart — et comment le combler en dix minutes.",
+          "name": "Léa S.",
+          "role": "Founder"
+        }
+      }
+    },
+    "final": {
+      "title": "Passez du brouillon à la clarté",
+      "sub": "Deux minutes pour évaluer votre niveau. Puis un plan sur mesure.",
+      "cta": "Évaluer mon niveau en 2 min"
+    }
+  },
   "Auth": {
     "loginTitle": "Connexion",
     "signupTitle": "Créer un compte",

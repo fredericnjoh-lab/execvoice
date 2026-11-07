@@ -42,6 +42,12 @@ Mobile-first web app for executive speaking practice (clarity, structure, C-leve
 - HUD live (alignement tête/épaules, regard caméra, mains visibles)
 - Scores posture fusionnés dans le feedback session
 
+### Landing 3D — The Voice Sphere ✅
+- Hero plein écran `#0B1020`, ~20k particules (shader), morph au scroll
+- Réaction curseur / gyroscope, Lenis + GSAP ScrollTrigger
+- Poster WEBP + fallback (no WebGL / reduced-motion / low RAM)
+- Sections : preuve, avant/après, méthode (tilt), démo phone 3D, témoignages, CTA
+
 ---
 
 ## Setup

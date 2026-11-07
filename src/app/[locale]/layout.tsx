@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Cormorant_Garamond, Figtree } from "next/font/google";
+import { Instrument_Serif, Inter } from "next/font/google";
 import { routing } from "@/i18n/routing";
 
-const display = Cormorant_Garamond({
+const display = Instrument_Serif({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400"],
   variable: "--font-display",
   display: "swap",
 });
 
-const body = Figtree({
+const body = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",

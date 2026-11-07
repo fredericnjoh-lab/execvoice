@@ -21,6 +21,81 @@
     "ctaStart": "Start training",
     "ctaLogin": "I already have an account"
   },
+  "Landing": {
+    "hero": {
+      "title": "Speak the way they listen in the boardroom",
+      "sub": "From mental draft to clear delivery — 5 to 20 minutes a day.",
+      "cta": "Assess my level in 2 min"
+    },
+    "proof": {
+      "days": "Executive training plan",
+      "axes": "AI feedback axes",
+      "eval": "To set your starting point"
+    },
+    "beforeAfter": {
+      "title": "From haze to a line that cuts",
+      "sub": "Same idea. Different level of authority.",
+      "beforeLabel": "Before",
+      "afterLabel": "C-level rewrite",
+      "beforeText": "Uh so basically I think our priority this quarter is actually to accelerate acquisition. We're a bit behind but you know we'll try to catch up.",
+      "afterText": "Our #1 priority this quarter: accelerate acquisition. We're closing a pipeline gap with three levers — targeted outbound, partnerships, and a shorter sales cycle."
+    },
+    "method": {
+      "title": "A four-step method",
+      "sub": "One clear question, a timed exercise, immediate feedback.",
+      "step": "Step {n}",
+      "steps": {
+        "1": {
+          "title": "Diagnose",
+          "body": "Goal, fears, pace: a 30-day plan calibrated to you."
+        },
+        "2": {
+          "title": "Practice",
+          "body": "Impromptu, pitch, board Q&A, storytelling — timer and camera."
+        },
+        "3": {
+          "title": "Measure",
+          "body": "Six axes, pace, fillers, C-level rewrites."
+        },
+        "4": {
+          "title": "Lock in",
+          "body": "Streak, progress, one actionable tip per session."
+        }
+      }
+    },
+    "demo": {
+      "title": "Feedback like a coach in your pocket",
+      "sub": "Record. Get the version “as a CEO would have said it.”",
+      "b1": "Transcript + scores /100",
+      "b2": "Fillers detected and 130–160 wpm target",
+      "b3": "Camera posture (alignment, gaze, hands)"
+    },
+    "testimonials": {
+      "title": "They sound different now",
+      "items": {
+        "1": {
+          "quote": "In board meetings I now lead with the conclusion. The questions changed tone.",
+          "name": "Camille R.",
+          "role": "VP Sales"
+        },
+        "2": {
+          "quote": "Fillers dropped. Silence became a tool, not a hole.",
+          "name": "Marc D.",
+          "role": "CFO"
+        },
+        "3": {
+          "quote": "The CEO rewrite showed the gap — and how to close it in ten minutes.",
+          "name": "Léa S.",
+          "role": "Founder"
+        }
+      }
+    },
+    "final": {
+      "title": "Move from draft to clarity",
+      "sub": "Two minutes to assess your level. Then a tailored plan.",
+      "cta": "Assess my level in 2 min"
+    }
+  },
   "Auth": {
     "loginTitle": "Log in",
     "signupTitle": "Create account",

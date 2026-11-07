@@ -5,7 +5,12 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@mediapipe/tasks-vision"],
+  transpilePackages: [
+    "@mediapipe/tasks-vision",
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+  ],
 };
 
 export default withNextIntl(nextConfig);
