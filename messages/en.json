@@ -212,7 +212,22 @@
   },
   "Dashboard": {
     "title": "Dashboard",
-    "stub": "Phase 4 will add streak and scores. Meanwhile, try an exercise.",
+    "greeting": "Hello",
+    "guest": "Leader",
+    "dayOf": "Day {day} / 30",
+    "todayTitle": "Today's exercise",
+    "startExercise": "Start",
+    "noExercise": "No exercise planned",
+    "streak": "Streak",
+    "best": "Best",
+    "overall": "Score",
+    "noScore": "—",
+    "axesTitle": "Progress by axis",
+    "recentTitle": "Recent sessions",
+    "noSessions": "No sessions yet — start today's exercise.",
+    "viewProgress": "See all",
+    "minutes": "{n} min",
+    "demoBadge": "Demo",
     "tryExercise": "Try an exercise"
   },
   "Exercise": {
@@ -279,7 +294,14 @@
   },
   "Progress": {
     "title": "Progress",
-    "stub": "Phase 4 — curves and history."
+    "subtitle": "Curves and history of your speaking sessions.",
+    "overallTrend": "Trend",
+    "axesTitle": "Filter by axis",
+    "historyTitle": "History",
+    "empty": "Complete a session to see your curves.",
+    "sessions": "{n} sessions",
+    "axisOverall": "Overall",
+    "demoBadge": "Demo"
   },
   "Settings": {
     "title": "Settings",

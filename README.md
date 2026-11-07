@@ -31,6 +31,12 @@ Mobile-first web app for executive speaking practice (clarity, structure, C-leve
 - Feedback cards on `/session/[id]` (6 axes, tics, débit, rewrite CEO, tip)
 - Demo shortcut: `/[locale]/exercise/demo`
 
+### Phase 4 ✅
+- Dashboard: exercice du jour (plan J/30), streak, score global, axes, sessions récentes
+- Progress: sparklines par axe + historique
+- Bottom nav mobile (dashboard / progress / settings)
+- Mode démo sans auth (exercice du jour depuis le seed)
+
 ---
 
 ## Setup
@@ -99,6 +105,6 @@ Source of truth: `src/lib/seed/exercises.ts` → writes `supabase/seed/exercises
 
 ## Next
 
-**Phase 4** — dashboard (exercice du jour, streak, score), progression curves.
+**Phase 5** (optionnel) — module posture caméra (MediaPipe Pose / FaceMesh).
 
-Awaiting your validation before starting Phase 4.
+Awaiting your validation before starting Phase 5.

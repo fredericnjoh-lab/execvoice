@@ -1,6 +1,7 @@
-import { setRequestLocale } from "next-intl/server";
-import { getTranslations } from "next-intl/server";
-import { PhaseStub } from "@/components/layout/phase-stub";
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { ProgressView } from "@/components/progress/progress-view";
+import { getDashboardData } from "@/lib/dashboard/get-dashboard-data";
+import type { AppLanguage } from "@/lib/types/database";
 
 export default async function ProgressPage({
   params,
@@ -10,14 +11,34 @@ export default async function ProgressPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Progress");
-  const tCommon = await getTranslations("Common");
+  const tSession = await getTranslations("Session");
+
+  const data = await getDashboardData(
+    (locale === "en" ? "en" : "fr") as AppLanguage
+  );
 
   return (
-    <PhaseStub
-      title={t("title")}
-      description={t("stub")}
-      backHref="/dashboard"
-      backLabel={tCommon("back")}
+    <ProgressView
+      data={data}
+      labels={{
+        title: t("title"),
+        subtitle: t("subtitle"),
+        overallTrend: t("overallTrend"),
+        axesTitle: t("axesTitle"),
+        historyTitle: t("historyTitle"),
+        empty: t("empty"),
+        sessions: t("sessions"),
+        demoBadge: t("demoBadge"),
+        axes: {
+          overall: t("axisOverall"),
+          clarity: tSession("axes.clarity"),
+          structure: tSession("axes.structure"),
+          concision: tSession("axes.concision"),
+          vocabulary: tSession("axes.vocabulary"),
+          confidence: tSession("axes.confidence"),
+          impact: tSession("axes.impact"),
+        },
+      }}
     />
   );
 }

@@ -212,7 +212,22 @@
   },
   "Dashboard": {
     "title": "Tableau de bord",
-    "stub": "Phase 4 ajoutera streak et scores. En attendant, lancez un exercice.",
+    "greeting": "Bonjour",
+    "guest": "Cadre",
+    "dayOf": "Jour {day} / 30",
+    "todayTitle": "Exercice du jour",
+    "startExercise": "Commencer",
+    "noExercise": "Aucun exercice planifié",
+    "streak": "Streak",
+    "best": "Record",
+    "overall": "Score",
+    "noScore": "—",
+    "axesTitle": "Progression par axe",
+    "recentTitle": "Sessions récentes",
+    "noSessions": "Pas encore de session — lancez l'exercice du jour.",
+    "viewProgress": "Voir tout",
+    "minutes": "{n} min",
+    "demoBadge": "Démo",
     "tryExercise": "Essayer un exercice"
   },
   "Exercise": {
@@ -279,7 +294,14 @@
   },
   "Progress": {
     "title": "Progression",
-    "stub": "Phase 4 — courbes et historique."
+    "subtitle": "Courbes et historique de vos prises de parole.",
+    "overallTrend": "Tendance",
+    "axesTitle": "Filtrer par axe",
+    "historyTitle": "Historique",
+    "empty": "Complétez une session pour voir vos courbes.",
+    "sessions": "{n} sessions",
+    "axisOverall": "Global",
+    "demoBadge": "Démo"
   },
   "Settings": {
     "title": "Réglages",
