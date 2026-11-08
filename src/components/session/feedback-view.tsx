@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
+import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -46,10 +47,13 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
   const inBand = feedback.wpm >= low && feedback.wpm <= high;
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col gap-5 px-5 pb-10 pt-4">
-      <header className="flex items-center justify-between">
+    <AppShell className="gap-5">
+      <header className="flex items-center justify-between gap-3">
         <Logo />
-        <Link href="/dashboard" className="text-sm text-navy/55 hover:text-navy">
+        <Link
+          href="/dashboard"
+          className="inline-flex min-h-[44px] items-center text-sm text-navy/55 hover:text-navy"
+        >
           {t("backDashboard")}
         </Link>
       </header>
@@ -58,7 +62,7 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
         <p className="text-xs uppercase tracking-wide text-gold">
           {exercise?.title ?? t("title")}
         </p>
-        <h1 className="mt-1 font-display text-3xl font-semibold text-navy">
+        <h1 className="mt-1 font-display text-[1.85rem] font-semibold leading-tight text-navy sm:text-3xl">
           {t("overallScore")}
         </h1>
         <p className={cn("mt-2 font-display text-5xl font-semibold", scoreColor(scores.overall))}>
@@ -223,7 +227,7 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
         </CardContent>
       </Card>
 
-      <div className="flex flex-col gap-3 pt-2">
+      <div className="sticky-actions flex flex-col gap-3">
         {exercise?.id ? (
           <Button asChild variant="gold" size="lg" className="w-full">
             <Link href={`/exercise/${exercise.id}`}>{t("retry")}</Link>
@@ -233,6 +237,6 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
           <Link href="/dashboard">{t("backDashboard")}</Link>
         </Button>
       </div>
-    </main>
+    </AppShell>
   );
 }

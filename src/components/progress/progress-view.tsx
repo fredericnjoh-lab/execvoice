@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Logo } from "@/components/brand/logo";
-import { BottomNav } from "@/components/layout/bottom-nav";
+import { AppShell } from "@/components/layout/app-shell";
 import { Sparkline } from "@/components/progress/sparkline";
 import {
   Card,
@@ -59,8 +59,8 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
   }, [series]);
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-5 pb-28 pt-5">
-      <header className="flex items-center justify-between">
+    <AppShell withNav>
+      <header className="flex items-center justify-between gap-3">
         <Logo />
         {!data.authenticated ? (
           <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] uppercase tracking-wide text-navy/50">
@@ -69,8 +69,8 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
         ) : null}
       </header>
 
-      <section className="mt-8 animate-fade-up">
-        <h1 className="font-display text-3xl font-semibold text-navy">
+      <section className="mt-7 animate-fade-up sm:mt-8">
+        <h1 className="font-display text-[1.85rem] font-semibold leading-tight text-navy sm:text-3xl">
           {labels.title}
         </h1>
         <p className="mt-2 text-sm text-navy/60">{labels.subtitle}</p>
@@ -87,7 +87,7 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
         </Card>
       ) : (
         <>
-          <Card className="mt-6 animate-fade-up [animation-delay:60ms]">
+          <Card className="mt-5 animate-fade-up [animation-delay:60ms] sm:mt-6">
             <CardHeader className="pb-2">
               <CardDescription>{labels.overallTrend}</CardDescription>
               <CardTitle className="flex items-baseline gap-2 font-display text-2xl">
@@ -118,14 +118,14 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
             <h2 className="mb-3 font-display text-lg font-semibold text-navy">
               {labels.axesTitle}
             </h2>
-            <div className="flex flex-wrap gap-2">
+            <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 no-scrollbar snap-x snap-mandatory sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
               {AXIS_KEYS.map((key) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setActive(key)}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs transition-colors",
+                    "snap-start shrink-0 rounded-full border px-3.5 py-2 text-xs transition-colors touch-manipulation min-h-[40px]",
                     active === key
                       ? "border-navy bg-navy text-white"
                       : "border-navy/15 bg-white text-navy/70 hover:border-gold/50"
@@ -146,7 +146,7 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
                 <li key={s.id}>
                   <Link
                     href={`/session/${s.id}`}
-                    className="flex items-center justify-between rounded-xl border border-navy/10 bg-white px-4 py-3 hover:border-gold/40"
+                    className="flex min-h-[56px] items-center justify-between gap-3 rounded-xl border border-navy/10 bg-white px-4 py-3 active:bg-navy/[0.03] hover:border-gold/40"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-navy">
@@ -156,7 +156,7 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
                         {new Date(s.created_at).toLocaleString()}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="shrink-0 text-right">
                       <p className="font-display text-xl font-semibold text-navy">
                         {s.scores?.overall ?? "—"}
                       </p>
@@ -173,8 +173,6 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
           </section>
         </>
       )}
-
-      <BottomNav />
-    </main>
+    </AppShell>
   );
 }

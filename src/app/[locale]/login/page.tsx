@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/brand/logo";
 import { LoginForm } from "@/components/auth/login-form";
+import { AppShell } from "@/components/layout/app-shell";
 import {
   Card,
   CardContent,
@@ -23,7 +24,7 @@ export default async function LoginPage({
   const t = await getTranslations("Auth");
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-6 py-10">
+    <AppShell narrow centered className="py-6">
       <div className="mb-8 text-center animate-fade-up">
         <Logo />
       </div>
@@ -36,6 +37,6 @@ export default async function LoginPage({
           <LoginForm nextPath={next || "/dashboard"} />
         </CardContent>
       </Card>
-    </main>
+    </AppShell>
   );
 }

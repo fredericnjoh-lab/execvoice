@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { AppShell } from "@/components/layout/app-shell";
 import { OptionCard } from "@/components/onboarding/option-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -180,11 +181,11 @@ export function OnboardingWizard() {
   // ── Result screen after plan generation ──────────────────────────────────
   if (plan) {
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-5 pb-10 pt-6">
+      <AppShell>
         <Logo />
-        <div className="mt-10 animate-fade-up">
+        <div className="mt-8 animate-fade-up sm:mt-10">
           <div className="h-px w-14 origin-left bg-gold animate-gold-line" />
-          <h1 className="mt-5 font-display text-3xl font-semibold text-navy">
+          <h1 className="mt-5 font-display text-[1.85rem] font-semibold leading-tight text-navy sm:text-3xl">
             {t("planReadyTitle")}
           </h1>
           <p className="mt-3 text-navy/65">{plan.summary}</p>
@@ -208,26 +209,28 @@ export function OnboardingWizard() {
           </li>
         </ul>
 
-        <Button
-          className="mt-auto w-full"
-          variant="gold"
-          size="lg"
-          onClick={() => router.push("/dashboard")}
-        >
-          {t("goDashboard")}
-        </Button>
-      </main>
+        <div className="sticky-actions">
+          <Button
+            className="w-full"
+            variant="gold"
+            size="lg"
+            onClick={() => router.push("/dashboard")}
+          >
+            {t("goDashboard")}
+          </Button>
+        </div>
+      </AppShell>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-5 pb-8 pt-4">
+    <AppShell>
       {/* Top bar */}
-      <header className="flex items-center gap-3">
+      <header className="flex items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={goBack}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-navy/70 hover:bg-navy/5"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-navy/70 touch-manipulation active:bg-navy/5 hover:bg-navy/5"
           aria-label={t("back")}
         >
           <ChevronLeft className="h-5 w-5" />
@@ -240,15 +243,15 @@ export function OnboardingWizard() {
         </div>
       </header>
 
-      <section className="mt-8 flex flex-1 flex-col">
-        <h1 className="font-display text-2xl font-semibold leading-snug text-navy text-balance animate-fade-up sm:text-3xl">
+      <section className="mt-6 flex flex-1 flex-col sm:mt-8">
+        <h1 className="font-display text-[1.55rem] font-semibold leading-snug text-navy text-balance animate-fade-up sm:text-3xl">
           {t(`steps.${step}.title`)}
         </h1>
         <p className="mt-2 text-sm text-navy/60 animate-fade-up [animation-delay:60ms]">
           {t(`steps.${step}.subtitle`)}
         </p>
 
-        <div className="mt-8 space-y-3 animate-fade-up [animation-delay:120ms]">
+        <div className="mt-6 space-y-2.5 animate-fade-up [animation-delay:120ms] sm:mt-8 sm:space-y-3">
           {step === "name" && (
             <Input
               autoFocus
@@ -445,7 +448,7 @@ export function OnboardingWizard() {
           </p>
         ) : null}
 
-        <div className="mt-auto pt-8">
+        <div className="sticky-actions">
           <Button
             type="button"
             variant="gold"
@@ -470,6 +473,6 @@ export function OnboardingWizard() {
           ) : null}
         </div>
       </section>
-    </main>
+    </AppShell>
   );
 }

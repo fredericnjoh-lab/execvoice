@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -23,6 +23,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1020" },
+  ],
+  colorScheme: "light",
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -33,6 +44,14 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "ExecVoice",
+    },
+    formatDetection: {
+      telephone: false,
+    },
   };
 }
 

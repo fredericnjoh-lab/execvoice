@@ -6,6 +6,7 @@ import { Loader2, Mic, Square, Video, RotateCcw, Send } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { PostureHud } from "@/components/exercise/posture-hud";
 import { TimerRing } from "@/components/exercise/timer-ring";
+import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useMediaRecorder, type MediaKind } from "@/hooks/use-media-recorder";
@@ -187,22 +188,22 @@ export function ExercisePlayer({
     kind === "video" || (phase === "review" && Boolean(recorder.previewUrl));
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-5 pb-8 pt-4">
+    <AppShell>
       <header className="flex items-center justify-between gap-3">
         <Logo />
         <Link
           href="/dashboard"
-          className="text-sm text-navy/55 hover:text-navy"
+          className="inline-flex min-h-[44px] items-center text-sm text-navy/55 hover:text-navy"
         >
           {t("exit")}
         </Link>
       </header>
 
-      <div className="mt-6">
+      <div className="mt-5 sm:mt-6">
         <p className="text-xs uppercase tracking-wide text-gold">
           {t(`types.${exercise.type}`)}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-semibold text-navy">
+        <h1 className="mt-1 font-display text-[1.55rem] font-semibold leading-snug text-navy sm:text-2xl">
           {exercise.title}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-navy/70">
@@ -217,10 +218,11 @@ export function ExercisePlayer({
       </div>
 
       {phase === "intro" && exercise.type !== "posture" ? (
-        <div className="mt-6 flex gap-2">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:flex sm:gap-2">
           <Button
             type="button"
-            size="sm"
+            size="default"
+            className="w-full sm:w-auto"
             variant={kind === "audio" ? "default" : "outline"}
             onClick={() => setKind("audio")}
           >
@@ -229,7 +231,8 @@ export function ExercisePlayer({
           </Button>
           <Button
             type="button"
-            size="sm"
+            size="default"
+            className="w-full sm:w-auto"
             variant={kind === "video" ? "default" : "outline"}
             onClick={() => setKind("video")}
           >
@@ -239,9 +242,9 @@ export function ExercisePlayer({
         </div>
       ) : null}
 
-      <section className="mt-8 flex flex-1 flex-col items-center">
+      <section className="mt-6 flex flex-1 flex-col items-center sm:mt-8">
         {showVideoShell && (
-          <div className="relative mb-6 w-full overflow-hidden rounded-xl border border-navy/10 bg-navy/95 aspect-video">
+          <div className="relative mb-5 w-full overflow-hidden rounded-xl border border-navy/10 bg-navy/95 aspect-[4/3] max-h-[42svh] sm:mb-6 sm:aspect-video sm:max-h-none">
             {phase === "review" && recorder.previewUrl ? (
               kind === "video" ? (
                 <video
@@ -332,7 +335,7 @@ export function ExercisePlayer({
         ) : null}
       </section>
 
-      <div className="mt-6 flex flex-col gap-3">
+      <div className="sticky-actions flex flex-col gap-3">
         {phase === "intro" && (
           <Button variant="gold" size="lg" className="w-full" onClick={begin}>
             {exercise.prep_s > 0 ? t("startPrep") : t("startRecord")}
@@ -388,6 +391,6 @@ export function ExercisePlayer({
           </>
         )}
       </div>
-    </main>
+    </AppShell>
   );
 }

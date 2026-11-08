@@ -25,8 +25,9 @@ export function OptionCard({
       onClick={onSelect}
       aria-pressed={selected}
       className={cn(
-        "group flex w-full items-start gap-3 rounded-xl border bg-white px-4 py-4 text-left transition-all duration-200",
-        "hover:border-gold/50 hover:shadow-sm active:scale-[0.99]",
+        "group flex w-full items-start gap-3 rounded-xl border bg-white px-4 py-3.5 text-left transition-all duration-200 touch-manipulation sm:py-4",
+        "hover:border-gold/50 hover:shadow-sm active:scale-[0.985]",
+        "min-h-[56px]",
         selected
           ? "border-gold bg-gold/5 ring-2 ring-gold/40"
           : "border-navy/10"
