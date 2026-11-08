@@ -8,13 +8,15 @@
     "tagline": "The voice of leadership"
   },
   "Nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Cockpit",
     "progress": "Progress",
     "settings": "Settings",
     "login": "Log in",
     "signup": "Create account",
     "logout": "Log out",
-    "language": "Language"
+    "language": "Language",
+    "home": "Home",
+    "cockpit": "Cockpit"
   },
   "Home": {
     "headline": "Speak like a CEO.",
@@ -26,7 +28,8 @@
     "hero": {
       "title": "Speak the way they listen in the boardroom",
       "sub": "From mental draft to clear delivery — 5 to 20 minutes a day.",
-      "cta": "Assess my level in 2 min"
+      "cta": "Open cockpit",
+      "ctaSecondary": "Create my profile"
     },
     "proof": {
       "days": "Executive training plan",
@@ -93,8 +96,9 @@
     },
     "final": {
       "title": "Move from draft to clarity",
-      "sub": "Two minutes to assess your level. Then a tailored plan.",
-      "cta": "Assess my level in 2 min"
+      "sub": "Open the cockpit to train. Create a profile to keep your progress.",
+      "cta": "Open cockpit",
+      "ctaSecondary": "Create my profile"
     }
   },
   "Auth": {
@@ -105,10 +109,25 @@
     "name": "First name",
     "submitLogin": "Log in",
     "submitSignup": "Create my account",
+    "signingIn": "Signing in…",
+    "creating": "Creating…",
+    "logout": "Log out",
+    "loggingOut": "Signing out…",
     "noAccount": "No account yet?",
     "hasAccount": "Already have an account?",
+    "openCockpit": "Open cockpit",
+    "backHome": "Back to home",
+    "saveProgress": "Save my progress",
+    "confirmEmail": "We sent a confirmation link to {email}. Open it, then log back in to keep your progress.",
+    "goLoginAfterConfirm": "I've confirmed — log in",
     "errorGeneric": "Something went wrong. Please try again.",
-    "errorMissingConfig": "Supabase is not configured. Copy .env.example to .env.local."
+    "errorMissingConfig": "Supabase is not configured. Copy .env.example to .env.local.",
+    "errorAlreadyRegistered": "This account already exists. Please log in.",
+    "errorInvalidEmail": "Invalid email address.",
+    "errorWeakPassword": "Password too short (min. 6 characters).",
+    "errorInvalidCredentials": "Incorrect email or password.",
+    "errorEmailNotConfirmed": "Confirm your email first (check your inbox), then log in again.",
+    "errorRateLimit": "Too many attempts. Wait a few seconds."
   },
   "Onboarding": {
     "title": "Onboarding",
@@ -287,7 +306,7 @@
     }
   },
   "Dashboard": {
-    "title": "Dashboard",
+    "title": "Cockpit",
     "greeting": "Hello",
     "guest": "Leader",
     "dayOf": "Day {day} / 30",
@@ -303,8 +322,12 @@
     "noSessions": "No sessions yet — start today's exercise.",
     "viewProgress": "See all",
     "minutes": "{n} min",
-    "demoBadge": "Demo",
-    "tryExercise": "Try an exercise"
+    "demoBadge": "Guest",
+    "tryExercise": "Try an exercise",
+    "guestBannerTitle": "Save your profile to track progress",
+    "guestBannerBody": "Create an account (1 min) to keep streaks, scores, and your 30-day plan.",
+    "guestBannerCta": "Create my profile",
+    "personalizePlan": "Personalize my 30-day plan"
   },
   "Exercise": {
     "title": "Exercise",
@@ -396,7 +419,10 @@
   "Settings": {
     "title": "Settings",
     "language": "Language",
-    "stub": "Profile and preferences."
+    "stub": "Profile, language, and sign-in.",
+    "account": "Account",
+    "loggedIn": "Signed in — your progress is saved.",
+    "loggedOut": "Signed out — create a profile to save progress."
   },
   "Common": {
     "loading": "Loading…",

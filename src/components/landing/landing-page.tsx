@@ -210,17 +210,23 @@ export function LandingPage() {
         <Link href="/" className="font-display text-xl tracking-tight">
           Exec<span className="text-[#C9A861]">Voice</span>
         </Link>
-        <div className="flex items-center gap-2 text-sm sm:gap-3">
+        <div className="flex items-center gap-1.5 text-sm sm:gap-3">
           <LanguageSwitcher tone="dark" />
           <Link
+            href="/dashboard"
+            className="inline-flex min-h-[44px] items-center px-2 font-medium text-[#F5F1E8] transition hover:text-[#C9A861]"
+          >
+            {tNav("cockpit")}
+          </Link>
+          <Link
             href="/login"
-            className="inline-flex min-h-[44px] items-center px-2 text-[#F5F1E8]/70 transition hover:text-[#F5F1E8]"
+            className="hidden min-h-[44px] items-center px-2 text-[#F5F1E8]/70 transition hover:text-[#F5F1E8] sm:inline-flex"
           >
             {tNav("login")}
           </Link>
           <Link
             href="/signup"
-            className="inline-flex min-h-[44px] items-center rounded-full bg-[#C9A861] px-4 py-2 font-medium text-[#0B1020] transition hover:bg-[#d4b56f]"
+            className="inline-flex min-h-[44px] items-center rounded-full bg-[#C9A861] px-3 py-2 font-medium text-[#0B1020] transition hover:bg-[#d4b56f] sm:px-4"
           >
             {tNav("signup")}
           </Link>
@@ -239,12 +245,20 @@ export function LandingPage() {
           <p className="mt-5 max-w-xl text-base leading-relaxed text-[#F5F1E8]/70 sm:text-lg">
             {t("hero.sub")}
           </p>
-          <Link
-            href="/signup"
-            className="mt-8 inline-flex w-full min-h-[48px] items-center justify-center rounded-full bg-[#C9A861] px-7 py-3.5 text-sm font-semibold text-[#0B1020] shadow-[0_0_40px_rgba(201,168,97,0.25)] transition hover:bg-[#d4b56f] sm:w-auto"
-          >
-            {t("hero.cta")}
-          </Link>
+          <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <Link
+              href="/dashboard"
+              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-full bg-[#C9A861] px-7 py-3.5 text-sm font-semibold text-[#0B1020] shadow-[0_0_40px_rgba(201,168,97,0.25)] transition hover:bg-[#d4b56f] sm:w-auto"
+            >
+              {t("hero.cta")}
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-full border border-white/20 px-7 py-3.5 text-sm font-medium text-[#F5F1E8] transition hover:border-[#C9A861]/50 hover:text-[#C9A861] sm:w-auto"
+            >
+              {t("hero.ctaSecondary")}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -445,12 +459,20 @@ export function LandingPage() {
             {t("final.title")}
           </h2>
           <p className="mt-4 text-[#F5F1E8]/65">{t("final.sub")}</p>
-          <Link
-            href="/signup"
-            className="mt-8 inline-flex w-full min-h-[48px] items-center justify-center rounded-full bg-[#C9A861] px-8 py-4 text-sm font-semibold text-[#0B1020] shadow-[0_0_60px_rgba(201,168,97,0.35)] transition hover:bg-[#d4b56f] sm:w-auto"
-          >
-            {t("final.cta")}
-          </Link>
+          <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/dashboard"
+              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-full bg-[#C9A861] px-8 py-4 text-sm font-semibold text-[#0B1020] shadow-[0_0_60px_rgba(201,168,97,0.35)] transition hover:bg-[#d4b56f] sm:w-auto"
+            >
+              {t("final.cta")}
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-[#F5F1E8] transition hover:border-[#C9A861]/50 sm:w-auto"
+            >
+              {t("final.ctaSecondary")}
+            </Link>
+          </div>
         </div>
       </section>
 

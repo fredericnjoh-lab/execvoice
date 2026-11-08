@@ -35,15 +35,25 @@ export function LoginForm({ nextPath = "/dashboard" }: LoginFormProps) {
     setLoading(true);
     try {
       const supabase = createClient();
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
         password,
       });
       if (authError) {
-        setError(authError.message || t("errorGeneric"));
+        setError(mapLoginError(authError.message, t));
         return;
       }
-      router.push(nextPath);
+      if (!data.session) {
+        setError(t("errorGeneric"));
+        return;
+      }
+
+      const dest =
+        nextPath.startsWith("/") && !nextPath.startsWith("//")
+          ? nextPath
+          : "/dashboard";
+      // Prefer cockpit; strip absolute locale if middleware already localized Link.
+      router.push(dest.replace(/^\/(fr|en)/, "") || "/dashboard");
       router.refresh();
     } catch {
       setError(t("errorGeneric"));
@@ -83,7 +93,7 @@ export function LoginForm({ nextPath = "/dashboard" }: LoginFormProps) {
         </p>
       ) : null}
       <Button type="submit" className="w-full" variant="gold" disabled={loading}>
-        {t("submitLogin")}
+        {loading ? t("signingIn") : t("submitLogin")}
       </Button>
       <p className="text-center text-sm text-navy/60">
         {t("noAccount")}{" "}
@@ -91,6 +101,32 @@ export function LoginForm({ nextPath = "/dashboard" }: LoginFormProps) {
           {t("submitSignup")}
         </Link>
       </p>
+      <p className="text-center text-sm text-navy/45">
+        <Link href="/dashboard" className="underline underline-offset-4">
+          {t("openCockpit")}
+        </Link>
+        {" · "}
+        <Link href="/" className="underline underline-offset-4">
+          {t("backHome")}
+        </Link>
+      </p>
     </form>
   );
+}
+
+function mapLoginError(
+  message: string,
+  t: ReturnType<typeof useTranslations<"Auth">>
+) {
+  const m = message.toLowerCase();
+  if (m.includes("invalid login") || m.includes("invalid credentials")) {
+    return t("errorInvalidCredentials");
+  }
+  if (m.includes("email not confirmed") || m.includes("not confirmed")) {
+    return t("errorEmailNotConfirmed");
+  }
+  if (m.includes("rate") || m.includes("seconds")) {
+    return t("errorRateLimit");
+  }
+  return message || t("errorGeneric");
 }

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Logo } from "@/components/brand/logo";
 import { AppShell } from "@/components/layout/app-shell";
+import { AuthChrome } from "@/components/layout/auth-chrome";
 import { Sparkline } from "@/components/progress/sparkline";
 import {
   Card,
@@ -60,13 +61,11 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
 
   return (
     <AppShell withNav>
-      <header className="flex items-center justify-between gap-3">
-        <Logo />
-        {!data.authenticated ? (
-          <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] uppercase tracking-wide text-navy/50">
-            {labels.demoBadge}
-          </span>
-        ) : null}
+      <header className="flex items-start justify-between gap-3">
+        <Link href="/">
+          <Logo />
+        </Link>
+        <AuthChrome authenticated={data.authenticated} />
       </header>
 
       <section className="mt-7 animate-fade-up sm:mt-8">

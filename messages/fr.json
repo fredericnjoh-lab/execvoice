@@ -8,13 +8,15 @@
     "tagline": "La voix des dirigeants"
   },
   "Nav": {
-    "dashboard": "Tableau de bord",
+    "dashboard": "Cockpit",
     "progress": "Progression",
     "settings": "Réglages",
     "login": "Connexion",
     "signup": "Créer un compte",
     "logout": "Déconnexion",
-    "language": "Langue"
+    "language": "Langue",
+    "home": "Accueil",
+    "cockpit": "Cockpit"
   },
   "Home": {
     "headline": "Parlez comme un CEO.",
@@ -26,7 +28,8 @@
     "hero": {
       "title": "Parlez comme on vous écoute en comité de direction",
       "sub": "Du brouillon mental au discours clair — en 5 à 20 minutes par jour.",
-      "cta": "Évaluer mon niveau en 2 min"
+      "cta": "Ouvrir le cockpit",
+      "ctaSecondary": "Créer mon profil"
     },
     "proof": {
       "days": "Plan d'entraînement exécutif",
@@ -93,8 +96,9 @@
     },
     "final": {
       "title": "Passez du brouillon à la clarté",
-      "sub": "Deux minutes pour évaluer votre niveau. Puis un plan sur mesure.",
-      "cta": "Évaluer mon niveau en 2 min"
+      "sub": "Ouvrez le cockpit pour vous entraîner. Créez un profil pour garder votre suivi.",
+      "cta": "Ouvrir le cockpit",
+      "ctaSecondary": "Créer mon profil"
     }
   },
   "Auth": {
@@ -105,10 +109,25 @@
     "name": "Prénom",
     "submitLogin": "Se connecter",
     "submitSignup": "Créer mon compte",
+    "signingIn": "Connexion…",
+    "creating": "Création…",
+    "logout": "Se déconnecter",
+    "loggingOut": "Déconnexion…",
     "noAccount": "Pas encore de compte ?",
     "hasAccount": "Déjà un compte ?",
+    "openCockpit": "Ouvrir le cockpit",
+    "backHome": "Retour à l'accueil",
+    "saveProgress": "Sauver mon suivi",
+    "confirmEmail": "Un email de confirmation a été envoyé à {email}. Ouvrez le lien, puis reconnectez-vous pour enregistrer votre progression.",
+    "goLoginAfterConfirm": "J'ai confirmé — me connecter",
     "errorGeneric": "Une erreur est survenue. Réessayez.",
-    "errorMissingConfig": "Supabase n'est pas configuré. Copiez .env.example vers .env.local."
+    "errorMissingConfig": "Supabase n'est pas configuré. Copiez .env.example vers .env.local.",
+    "errorAlreadyRegistered": "Ce compte existe déjà. Connectez-vous.",
+    "errorInvalidEmail": "Adresse email invalide.",
+    "errorWeakPassword": "Mot de passe trop court (6 caractères min.).",
+    "errorInvalidCredentials": "Email ou mot de passe incorrect.",
+    "errorEmailNotConfirmed": "Confirmez d'abord votre email (lien reçu), puis reconnectez-vous.",
+    "errorRateLimit": "Trop de tentatives. Attendez quelques secondes."
   },
   "Onboarding": {
     "title": "Onboarding",
@@ -287,7 +306,7 @@
     }
   },
   "Dashboard": {
-    "title": "Tableau de bord",
+    "title": "Cockpit",
     "greeting": "Bonjour",
     "guest": "Cadre",
     "dayOf": "Jour {day} / 30",
@@ -303,8 +322,12 @@
     "noSessions": "Pas encore de session — lancez l'exercice du jour.",
     "viewProgress": "Voir tout",
     "minutes": "{n} min",
-    "demoBadge": "Démo",
-    "tryExercise": "Essayer un exercice"
+    "demoBadge": "Invité",
+    "tryExercise": "Essayer un exercice",
+    "guestBannerTitle": "Enregistrez votre profil pour le suivi",
+    "guestBannerBody": "Créez un compte (1 min) pour garder streaks, scores et plan 30 jours.",
+    "guestBannerCta": "Créer mon profil",
+    "personalizePlan": "Personnaliser mon plan 30 jours"
   },
   "Exercise": {
     "title": "Exercice",
@@ -396,7 +419,10 @@
   "Settings": {
     "title": "Réglages",
     "language": "Langue",
-    "stub": "Profil et préférences."
+    "stub": "Profil, langue et connexion.",
+    "account": "Compte",
+    "loggedIn": "Connecté — votre suivi est enregistré.",
+    "loggedOut": "Non connecté — créez un profil pour sauvegarder."
   },
   "Common": {
     "loading": "Chargement…",

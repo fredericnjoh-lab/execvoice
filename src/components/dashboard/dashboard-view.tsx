@@ -3,6 +3,7 @@ import { Flame, Target, Trophy } from "lucide-react";
 import { AxisBars } from "@/components/dashboard/axis-bars";
 import { Logo } from "@/components/brand/logo";
 import { AppShell } from "@/components/layout/app-shell";
+import { AuthChrome } from "@/components/layout/auth-chrome";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,25 +36,60 @@ interface DashboardViewProps {
     viewProgress: string;
     minutes: string;
     demoBadge: string;
+    guestBannerTitle: string;
+    guestBannerBody: string;
+    guestBannerCta: string;
+    personalizePlan: string;
   };
 }
 
 export function DashboardView({ data, labels }: DashboardViewProps) {
   const name = data.profile?.name?.trim() || labels.guest;
+  const needsOnboarding =
+    data.authenticated && data.profile && !data.profile.onboarding_completed;
 
   return (
     <AppShell withNav>
-      <header className="flex items-center justify-between gap-3">
-        <Logo />
-        {!data.authenticated ? (
-          <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] uppercase tracking-wide text-navy/50">
-            {labels.demoBadge}
-          </span>
-        ) : null}
+      <header className="flex items-start justify-between gap-3">
+        <Link href="/" className="shrink-0">
+          <Logo />
+        </Link>
+        <AuthChrome authenticated={data.authenticated} />
       </header>
 
+      {!data.authenticated ? (
+        <Card className="mt-5 border-gold/30 bg-gold/5 animate-fade-up">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium text-navy">
+              {labels.guestBannerTitle}
+            </CardTitle>
+            <CardDescription>{labels.guestBannerBody}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="gold" className="w-full sm:w-auto">
+              <Link href="/signup">{labels.guestBannerCta}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {needsOnboarding ? (
+        <div className="mt-4">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/onboarding">{labels.personalizePlan}</Link>
+          </Button>
+        </div>
+      ) : null}
+
       <section className="mt-7 animate-fade-up sm:mt-8">
-        <p className="text-sm text-navy/55">{labels.greeting}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-navy/55">{labels.greeting}</p>
+          {!data.authenticated ? (
+            <span className="rounded-full bg-navy/5 px-2.5 py-1 text-[10px] uppercase tracking-wide text-navy/50">
+              {labels.demoBadge}
+            </span>
+          ) : null}
+        </div>
         <h1 className="font-display text-[1.85rem] font-semibold leading-tight text-navy sm:text-3xl">
           {name}
         </h1>
@@ -62,7 +98,6 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
         </p>
       </section>
 
-      {/* Stats row */}
       <section className="mt-5 grid grid-cols-3 gap-2.5 animate-fade-up [animation-delay:60ms] sm:mt-6 sm:gap-3">
         <Stat
           icon={<Flame className="h-4 w-4 text-gold" />}
@@ -83,7 +118,6 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
         />
       </section>
 
-      {/* Today's exercise */}
       <Card className="mt-5 animate-fade-up [animation-delay:120ms] border-gold/25 sm:mt-6">
         <CardHeader className="pb-2">
           <CardDescription>{labels.todayTitle}</CardDescription>
@@ -114,7 +148,6 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
         </CardContent>
       </Card>
 
-      {/* Axis averages */}
       {data.axisAverages ? (
         <Card className="mt-4 animate-fade-up [animation-delay:180ms]">
           <CardHeader className="pb-2">
@@ -126,7 +159,6 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
         </Card>
       ) : null}
 
-      {/* Recent */}
       <section className="mt-6 animate-fade-up [animation-delay:220ms]">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="font-display text-lg font-semibold text-navy">

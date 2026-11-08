@@ -17,10 +17,12 @@ export function SignupForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [needsEmailConfirm, setNeedsEmailConfirm] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setNeedsEmailConfirm(false);
 
     if (
       !process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -33,25 +35,70 @@ export function SignupForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const { error: authError } = await supabase.auth.signUp({
-        email,
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
+      const { data, error: authError } = await supabase.auth.signUp({
+        email: email.trim(),
         password,
         options: {
-          data: { name, language: locale },
+          data: { name: name.trim(), language: locale },
+          emailRedirectTo: origin
+            ? `${origin}/auth/callback?next=/${locale}/dashboard`
+            : undefined,
         },
       });
+
       if (authError) {
-        setError(authError.message || t("errorGeneric"));
+        setError(mapAuthError(authError.message, t));
         return;
       }
-      // After signup, send user through onboarding (Phase 2).
-      router.push("/onboarding");
-      router.refresh();
+
+      // Empty identities = obfuscated response (user may already exist).
+      const identities = data.user?.identities ?? [];
+      if (data.user && identities.length === 0) {
+        setError(t("errorAlreadyRegistered"));
+        return;
+      }
+
+      if (data.session) {
+        // Ensure profile row exists even if DB trigger missed.
+        try {
+          await supabase.from("profiles").upsert({
+            id: data.session.user.id,
+            name: name.trim(),
+            language: locale,
+          });
+        } catch {
+          /* schema may not be applied yet — still enter cockpit */
+        }
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
+
+      // Email confirmation required — no session yet.
+      setNeedsEmailConfirm(true);
     } catch {
       setError(t("errorGeneric"));
     } finally {
       setLoading(false);
     }
+  }
+
+  if (needsEmailConfirm) {
+    return (
+      <div className="space-y-4 text-center">
+        <p className="text-sm leading-relaxed text-navy/75">
+          {t("confirmEmail", { email })}
+        </p>
+        <Button asChild variant="gold" className="w-full">
+          <Link href="/login">{t("goLoginAfterConfirm")}</Link>
+        </Button>
+        <Button asChild variant="outline" className="w-full">
+          <Link href="/dashboard">{t("openCockpit")}</Link>
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -96,7 +143,7 @@ export function SignupForm() {
         </p>
       ) : null}
       <Button type="submit" className="w-full" variant="gold" disabled={loading}>
-        {t("submitSignup")}
+        {loading ? t("creating") : t("submitSignup")}
       </Button>
       <p className="text-center text-sm text-navy/60">
         {t("hasAccount")}{" "}
@@ -104,6 +151,31 @@ export function SignupForm() {
           {t("submitLogin")}
         </Link>
       </p>
+      <p className="text-center text-sm text-navy/45">
+        <Link href="/dashboard" className="underline underline-offset-4">
+          {t("openCockpit")}
+        </Link>
+      </p>
     </form>
   );
+}
+
+function mapAuthError(
+  message: string,
+  t: ReturnType<typeof useTranslations<"Auth">>
+) {
+  const m = message.toLowerCase();
+  if (m.includes("already") || m.includes("registered")) {
+    return t("errorAlreadyRegistered");
+  }
+  if (m.includes("invalid") && m.includes("email")) {
+    return t("errorInvalidEmail");
+  }
+  if (m.includes("password")) {
+    return t("errorWeakPassword");
+  }
+  if (m.includes("rate") || m.includes("seconds")) {
+    return t("errorRateLimit");
+  }
+  return message || t("errorGeneric");
 }

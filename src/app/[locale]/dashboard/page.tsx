@@ -45,6 +45,10 @@ export default async function DashboardPage({
         viewProgress: t("viewProgress"),
         minutes: t("minutes"),
         demoBadge: t("demoBadge"),
+        guestBannerTitle: t("guestBannerTitle"),
+        guestBannerBody: t("guestBannerBody"),
+        guestBannerCta: t("guestBannerCta"),
+        personalizePlan: t("personalizePlan"),
       }}
     />
   );
