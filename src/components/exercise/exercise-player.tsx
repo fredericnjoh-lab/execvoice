@@ -37,6 +37,7 @@ export function ExercisePlayer({
   const [pending, startTransition] = useTransition();
   const recordedSecondsRef = useRef(0);
   const postureResultRef = useRef<PostureFeedback | null>(null);
+  const recordedBlobRef = useRef<Blob | null>(null);
 
   const prep = useCountdown(exercise.prep_s);
   const speak = useCountdown(exercise.duration_s);
@@ -44,12 +45,20 @@ export function ExercisePlayer({
   const posture = usePostureAnalyzer({ language: locale });
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Attach live preview
+  // Attach live preview + kick play() (required on iOS).
   useEffect(() => {
-    if (videoRef.current && recorder.stream && kind === "video") {
-      videoRef.current.srcObject = recorder.stream;
+    const el = videoRef.current;
+    if (!el || !recorder.stream || kind !== "video") return;
+    el.srcObject = recorder.stream;
+    el.muted = true;
+    el.playsInline = true;
+    const play = el.play();
+    if (play && typeof play.catch === "function") {
+      play.catch(() => {
+        /* autoplay race — user gesture already happened upstream */
+      });
     }
-  }, [recorder.stream, kind]);
+  }, [recorder.stream, kind, phase]);
 
   const phaseLabel = useMemo(() => {
     switch (phase) {
@@ -66,11 +75,15 @@ export function ExercisePlayer({
     }
   }, [phase, t]);
 
-  function finishRecording(elapsed: number) {
+  async function finishRecording(elapsed: number) {
     recordedSecondsRef.current = elapsed;
-    recorder.stop();
     if (kind === "video") {
       postureResultRef.current = posture.stop();
+    }
+    const file = await recorder.stop();
+    recordedBlobRef.current = file;
+    if (!file) {
+      setError(t("errors.emptyRecording"));
     }
     setPhase("review");
   }
@@ -78,14 +91,24 @@ export function ExercisePlayer({
   async function begin() {
     setError(null);
     postureResultRef.current = null;
+    recordedBlobRef.current = null;
     posture.reset();
+
+    if (!recorder.isSupported) {
+      setError(t("errors.unsupported"));
+      return;
+    }
+
     const ok = await recorder.ensurePermission();
     if (!ok) {
-      setError(t("errors.permission"));
+      setError(
+        recorder.error === "recorder_unsupported"
+          ? t("errors.unsupported")
+          : t("errors.permission")
+      );
       return;
     }
     if (kind === "video") {
-      // Warm MediaPipe while user preps.
       void posture.ensureLoaded().catch(() => {
         /* non-blocking — analysis becomes optional */
       });
@@ -101,27 +124,36 @@ export function ExercisePlayer({
   async function startRecording() {
     setError(null);
     recordedSecondsRef.current = 0;
-    await recorder.start();
+    recordedBlobRef.current = null;
+    const started = await recorder.start();
+    if (!started) {
+      setError(t("errors.recorder"));
+      return;
+    }
     setPhase("recording");
 
-    if (kind === "video" && videoRef.current) {
-      void posture.start(videoRef.current);
-    }
+    // Wait a tick so the live <video> is mounted with the stream.
+    requestAnimationFrame(() => {
+      if (kind === "video" && videoRef.current) {
+        void posture.start(videoRef.current);
+      }
+    });
 
     speak.start(exercise.duration_s, () => {
-      finishRecording(exercise.duration_s);
+      void finishRecording(exercise.duration_s);
     });
   }
 
   function stopEarly() {
     const elapsed = Math.max(3, exercise.duration_s - speak.seconds);
     speak.pause();
-    finishRecording(elapsed);
+    void finishRecording(elapsed);
   }
 
   function retake() {
     posture.reset();
     postureResultRef.current = null;
+    recordedBlobRef.current = null;
     recorder.reset();
     prep.reset(exercise.prep_s);
     speak.reset(exercise.duration_s);
@@ -129,15 +161,28 @@ export function ExercisePlayer({
     setError(null);
   }
 
+  function chooseKind(next: MediaKind) {
+    if (next === kind) return;
+    setKind(next);
+    setError(null);
+  }
+
   function submit() {
     setPhase("uploading");
     setError(null);
 
-    // Prefer latest stop() result; fall back to hook state.
     const posturePayload = postureResultRef.current || posture.result;
+    const file = recordedBlobRef.current || recorder.blob;
 
     startTransition(async () => {
       try {
+        // If stop() raced, wait briefly for blob.
+        let upload = file;
+        if (!upload) {
+          await new Promise((r) => setTimeout(r, 400));
+          upload = recordedBlobRef.current || recorder.blob;
+        }
+
         const form = new FormData();
         form.set("exercise_id", exercise.id);
         form.set(
@@ -145,8 +190,9 @@ export function ExercisePlayer({
           String(recordedSecondsRef.current || exercise.duration_s)
         );
         form.set("media_kind", kind);
-        if (recorder.blob) {
-          form.set("file", recorder.blob, "take.webm");
+        if (upload && upload.size > 0) {
+          const ext = recorder.extension || (kind === "video" ? "webm" : "webm");
+          form.set("file", upload, `take.${ext}`);
         }
         if (kind === "video" && posturePayload) {
           form.set("posture", JSON.stringify(posturePayload));
@@ -187,6 +233,12 @@ export function ExercisePlayer({
   const showVideoShell =
     kind === "video" || (phase === "review" && Boolean(recorder.previewUrl));
 
+  const livePreview =
+    kind === "video" &&
+    phase !== "review" &&
+    phase !== "uploading" &&
+    (phase === "intro" ? false : true);
+
   return (
     <AppShell>
       <header className="flex items-center justify-between gap-3">
@@ -224,7 +276,7 @@ export function ExercisePlayer({
             size="default"
             className="w-full sm:w-auto"
             variant={kind === "audio" ? "default" : "outline"}
-            onClick={() => setKind("audio")}
+            onClick={() => chooseKind("audio")}
           >
             <Mic className="h-4 w-4" />
             {t("audio")}
@@ -234,7 +286,7 @@ export function ExercisePlayer({
             size="default"
             className="w-full sm:w-auto"
             variant={kind === "video" ? "default" : "outline"}
-            onClick={() => setKind("video")}
+            onClick={() => chooseKind("video")}
           >
             <Video className="h-4 w-4" />
             {t("video")}
@@ -250,6 +302,7 @@ export function ExercisePlayer({
                 <video
                   src={recorder.previewUrl}
                   controls
+                  playsInline
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -257,7 +310,7 @@ export function ExercisePlayer({
                   <audio src={recorder.previewUrl} controls className="w-full" />
                 </div>
               )
-            ) : kind === "video" ? (
+            ) : kind === "video" && (livePreview || recorder.stream) ? (
               <video
                 ref={videoRef}
                 autoPlay
@@ -267,12 +320,16 @@ export function ExercisePlayer({
               />
             ) : (
               <div className="flex h-full items-center justify-center text-gold/80">
-                <Mic
-                  className={cn(
-                    "h-10 w-10",
-                    phase === "recording" && "animate-pulse"
-                  )}
-                />
+                {kind === "video" ? (
+                  <Video className="h-10 w-10 opacity-60" />
+                ) : (
+                  <Mic
+                    className={cn(
+                      "h-10 w-10",
+                      phase === "recording" && "animate-pulse"
+                    )}
+                  />
+                )}
               </div>
             )}
 
@@ -333,6 +390,11 @@ export function ExercisePlayer({
             {error}
           </p>
         ) : null}
+        {recorder.error && !error ? (
+          <p className="mt-4 text-center text-sm text-red-700" role="alert">
+            {t("errors.recorder")}
+          </p>
+        ) : null}
       </section>
 
       <div className="sticky-actions flex flex-col gap-3">
@@ -348,7 +410,11 @@ export function ExercisePlayer({
             className="w-full"
             onClick={startRecording}
           >
-            <Mic className="h-4 w-4" />
+            {kind === "video" ? (
+              <Video className="h-4 w-4" />
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
             {t("startRecord")}
           </Button>
         )}

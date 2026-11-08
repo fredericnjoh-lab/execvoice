@@ -358,7 +358,10 @@
     },
     "errors": {
       "permission": "Autorisez le micro / la caméra pour continuer.",
-      "analyze": "Analyse impossible. Réessayez."
+      "analyze": "Analyse impossible. Réessayez.",
+      "unsupported": "Enregistrement non supporté sur ce navigateur. Essayez Chrome ou Safari récent.",
+      "recorder": "L'enregistrement a échoué. Réessayez ou passez en audio.",
+      "emptyRecording": "Aucun média capturé. Vérifiez micro/caméra et réessayez."
     },
     "postureHint": "Mode vidéo : analyse posture en direct (alignement, regard, mains).",
     "posture": {

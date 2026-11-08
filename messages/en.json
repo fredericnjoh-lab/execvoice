@@ -358,7 +358,10 @@
     },
     "errors": {
       "permission": "Allow microphone / camera to continue.",
-      "analyze": "Analysis failed. Please try again."
+      "analyze": "Analysis failed. Please try again.",
+      "unsupported": "Recording is not supported in this browser. Try Chrome or a recent Safari.",
+      "recorder": "Recording failed. Retry or switch to audio.",
+      "emptyRecording": "No media captured. Check mic/camera and try again."
     },
     "postureHint": "Video mode: live posture analysis (alignment, gaze, hands).",
     "posture": {

@@ -15,20 +15,52 @@ interface UseMediaRecorderResult {
   blob: Blob | null;
   previewUrl: string | null;
   mimeType: string | null;
-  start: () => Promise<void>;
-  stop: () => void;
+  /** File extension matching the recorded mime (webm | mp4 | m4a). */
+  extension: string;
+  start: () => Promise<boolean>;
+  /** Stops recording and resolves with the final Blob (waits for onstop). */
+  stop: () => Promise<Blob | null>;
   reset: () => void;
   ensurePermission: () => Promise<boolean>;
+  /** True when this browser can record the requested kind. */
+  isSupported: boolean;
 }
 
 function pickMimeType(kind: MediaKind): string | undefined {
   const candidates =
     kind === "video"
-      ? ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
-      : ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"];
+      ? [
+          // Chromium
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm",
+          // Safari / iOS
+          "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+          "video/mp4",
+        ]
+      : [
+          "audio/webm;codecs=opus",
+          "audio/webm",
+          "audio/mp4",
+          "audio/aac",
+        ];
 
   if (typeof MediaRecorder === "undefined") return undefined;
-  return candidates.find((t) => MediaRecorder.isTypeSupported(t));
+  return candidates.find((t) => {
+    try {
+      return MediaRecorder.isTypeSupported(t);
+    } catch {
+      return false;
+    }
+  });
+}
+
+function extensionForMime(mime: string | null | undefined, kind: MediaKind): string {
+  const m = (mime || "").toLowerCase();
+  if (m.includes("mp4") || m.includes("avc") || m.includes("aac")) {
+    return kind === "video" ? "mp4" : "m4a";
+  }
+  return "webm";
 }
 
 /**
@@ -48,6 +80,14 @@ export function useMediaRecorder({
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const stopResolverRef = useRef<((blob: Blob | null) => void) | null>(null);
+  const kindRef = useRef(kind);
+  kindRef.current = kind;
+
+  const isSupported =
+    typeof window !== "undefined" &&
+    typeof MediaRecorder !== "undefined" &&
+    Boolean(navigator.mediaDevices?.getUserMedia);
 
   const stopTracks = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -65,6 +105,10 @@ export function useMediaRecorder({
     }
     recorderRef.current = null;
     chunksRef.current = [];
+    if (stopResolverRef.current) {
+      stopResolverRef.current(null);
+      stopResolverRef.current = null;
+    }
     stopTracks();
     setBlob(null);
     setPreviewUrl((prev) => {
@@ -76,6 +120,12 @@ export function useMediaRecorder({
     setStatus("idle");
   }, [stopTracks]);
 
+  // Re-acquire media when switching audio ↔ video.
+  useEffect(() => {
+    reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on kind change
+  }, [kind]);
+
   useEffect(() => () => reset(), [reset]);
 
   const ensurePermission = useCallback(async () => {
@@ -85,10 +135,30 @@ export function useMediaRecorder({
       if (!navigator.mediaDevices?.getUserMedia) {
         throw new Error("unsupported");
       }
+      if (typeof MediaRecorder === "undefined") {
+        throw new Error("recorder_unsupported");
+      }
+
       const constraints: MediaStreamConstraints =
         kind === "video"
-          ? { audio: true, video: { facingMode: "user", width: { ideal: 1280 } } }
-          : { audio: true, video: false };
+          ? {
+              audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+              },
+              video: {
+                facingMode: "user",
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+              },
+            }
+          : {
+              audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+              },
+              video: false,
+            };
 
       const media = await navigator.mediaDevices.getUserMedia(constraints);
       stopTracks();
@@ -99,7 +169,8 @@ export function useMediaRecorder({
     } catch (err) {
       console.error("[media]", err);
       setStatus("error");
-      setError(err instanceof Error ? err.message : "permission_denied");
+      const msg = err instanceof Error ? err.message : "permission_denied";
+      setError(msg);
       return false;
     }
   }, [kind, stopTracks]);
@@ -113,54 +184,123 @@ export function useMediaRecorder({
     });
 
     let media = streamRef.current;
-    if (!media || media.getTracks().some((t) => t.readyState === "ended")) {
+    const needsVideo = kind === "video";
+    const hasVideo = Boolean(media?.getVideoTracks().some((t) => t.readyState === "live"));
+    const hasAudio = Boolean(media?.getAudioTracks().some((t) => t.readyState === "live"));
+    const stale =
+      !media ||
+      media.getTracks().some((t) => t.readyState === "ended") ||
+      (needsVideo && !hasVideo) ||
+      !hasAudio;
+
+    if (stale) {
       const ok = await ensurePermission();
-      if (!ok) return;
+      if (!ok) return false;
       media = streamRef.current;
     }
-    if (!media) return;
+    if (!media) return false;
 
     const mime = pickMimeType(kind);
     chunksRef.current = [];
 
     try {
       const recorder = mime
-        ? new MediaRecorder(media, { mimeType: mime })
+        ? new MediaRecorder(media, {
+            mimeType: mime,
+            videoBitsPerSecond: kind === "video" ? 2_500_000 : undefined,
+          })
         : new MediaRecorder(media);
-      setMimeType(recorder.mimeType || mime || null);
+      const resolvedMime =
+        recorder.mimeType || mime || (kind === "video" ? "video/webm" : "audio/webm");
+      setMimeType(resolvedMime);
 
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+        if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
       };
+
       recorder.onstop = () => {
-        const type = recorder.mimeType || mime || (kind === "video" ? "video/webm" : "audio/webm");
-        const file = new Blob(chunksRef.current, { type });
+        const type =
+          recorder.mimeType ||
+          mime ||
+          (kindRef.current === "video" ? "video/webm" : "audio/webm");
+        const file =
+          chunksRef.current.length > 0
+            ? new Blob(chunksRef.current, { type })
+            : null;
         setBlob(file);
-        setPreviewUrl(URL.createObjectURL(file));
-        setStatus("stopped");
+        if (file) {
+          setPreviewUrl(URL.createObjectURL(file));
+        }
+        setStatus(file ? "stopped" : "error");
+        if (!file) setError("empty_recording");
+        stopResolverRef.current?.(file);
+        stopResolverRef.current = null;
       };
+
       recorder.onerror = () => {
         setError("recorder_error");
         setStatus("error");
+        stopResolverRef.current?.(null);
+        stopResolverRef.current = null;
       };
 
       recorderRef.current = recorder;
-      recorder.start(250);
+      // Timeslice keeps Safari/Chrome flushing chunks; 1000ms is safer than 250 on mobile.
+      recorder.start(1000);
       setStatus("recording");
+      return true;
     } catch (err) {
       console.error("[recorder]", err);
       setError(err instanceof Error ? err.message : "recorder_error");
       setStatus("error");
+      return false;
     }
   }, [ensurePermission, kind]);
 
-  const stop = useCallback(() => {
+  const stop = useCallback((): Promise<Blob | null> => {
     const recorder = recorderRef.current;
-    if (recorder && recorder.state === "recording") {
-      recorder.stop();
+    if (!recorder || recorder.state === "inactive") {
+      return Promise.resolve(blob);
     }
-    // Keep stream alive for retake preview camera; tracks stopped on reset.
-  }, []);
+
+    return new Promise<Blob | null>((resolve) => {
+      stopResolverRef.current = resolve;
+      try {
+        if (recorder.state === "recording") {
+          // Flush the current chunk before stop (helps Safari empty blobs).
+          try {
+            recorder.requestData();
+          } catch {
+            /* optional */
+          }
+          recorder.stop();
+        } else {
+          resolve(blob);
+          stopResolverRef.current = null;
+        }
+      } catch {
+        resolve(null);
+        stopResolverRef.current = null;
+      }
+      // Safety timeout if onstop never fires.
+      window.setTimeout(() => {
+        if (stopResolverRef.current === resolve) {
+          const type = mimeType || (kindRef.current === "video" ? "video/webm" : "audio/webm");
+          const file =
+            chunksRef.current.length > 0
+              ? new Blob(chunksRef.current, { type })
+              : null;
+          if (file) {
+            setBlob(file);
+            setPreviewUrl(URL.createObjectURL(file));
+            setStatus("stopped");
+          }
+          stopResolverRef.current = null;
+          resolve(file);
+        }
+      }, 2500);
+    });
+  }, [blob, mimeType]);
 
   return {
     status,
@@ -169,9 +309,11 @@ export function useMediaRecorder({
     blob,
     previewUrl,
     mimeType,
+    extension: extensionForMime(mimeType, kind),
     start,
     stop,
     reset,
     ensurePermission,
+    isSupported,
   };
 }
