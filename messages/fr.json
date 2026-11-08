@@ -13,7 +13,8 @@
     "settings": "Réglages",
     "login": "Connexion",
     "signup": "Créer un compte",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "language": "Langue"
   },
   "Home": {
     "headline": "Parlez comme un CEO.",

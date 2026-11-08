@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/brand/logo";
 import { SignupForm } from "@/components/auth/signup-form";
 import { AppShell } from "@/components/layout/app-shell";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import {
   Card,
   CardContent,
@@ -22,6 +23,9 @@ export default async function SignupPage({
 
   return (
     <AppShell narrow centered className="py-6">
+      <div className="mb-6 flex justify-end animate-fade-up">
+        <LanguageSwitcher tone="light" />
+      </div>
       <div className="mb-8 text-center animate-fade-up">
         <Logo />
       </div>

@@ -13,7 +13,8 @@
     "settings": "Settings",
     "login": "Log in",
     "signup": "Create account",
-    "logout": "Log out"
+    "logout": "Log out",
+    "language": "Language"
   },
   "Home": {
     "headline": "Speak like a CEO.",

@@ -9,6 +9,7 @@ import Tilt from "react-parallax-tilt";
 import { Mic2, Brain, LineChart, Sparkles } from "lucide-react";
 import { VoiceSphereScene } from "@/components/landing/voice-sphere-scene";
 import { PhoneScene } from "@/components/landing/phone-scene";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -209,7 +210,8 @@ export function LandingPage() {
         <Link href="/" className="font-display text-xl tracking-tight">
           Exec<span className="text-[#C9A861]">Voice</span>
         </Link>
-        <div className="flex items-center gap-2 text-sm sm:gap-4">
+        <div className="flex items-center gap-2 text-sm sm:gap-3">
+          <LanguageSwitcher tone="dark" />
           <Link
             href="/login"
             className="inline-flex min-h-[44px] items-center px-2 text-[#F5F1E8]/70 transition hover:text-[#F5F1E8]"
