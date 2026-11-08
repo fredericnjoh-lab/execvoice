@@ -325,8 +325,9 @@
     "demoBadge": "Guest",
     "tryExercise": "Try an exercise",
     "guestBannerTitle": "Save your profile to track progress",
-    "guestBannerBody": "Create an account (1 min) to keep streaks, scores, and your 30-day plan.",
+    "guestBannerBody": "Without an account, sessions stay local and disappear. Sign in to actually progress.",
     "guestBannerCta": "Create my profile",
+    "guestLoginCta": "Log back in",
     "personalizePlan": "Personalize my 30-day plan"
   },
   "Exercise": {
@@ -401,6 +402,12 @@
     "tipTitle": "Tip for next session",
     "transcriptTitle": "Transcript",
     "transcriptDemo": "Demo transcript (Whisper not configured or no file).",
+    "demoModeTitle": "Demo mode — scores are not personalized",
+    "demoModeBody": "No AI key (OPENAI_API_KEY) is configured on the server. Feedback reuses a stock transcript and a heuristic grid — that's why scores look the same. Add the key on Vercel for real coaching.",
+    "notSavedTitle": "Session not saved to your profile",
+    "notSavedBody": "Log in or create an account to keep scores, streak, and history.",
+    "notSavedSignup": "Create my profile",
+    "notSavedLogin": "Log in",
     "postureTitle": "Camera posture",
     "posture": {
       "alignment": "Alignment",

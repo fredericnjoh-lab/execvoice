@@ -325,8 +325,9 @@
     "demoBadge": "Invité",
     "tryExercise": "Essayer un exercice",
     "guestBannerTitle": "Enregistrez votre profil pour le suivi",
-    "guestBannerBody": "Créez un compte (1 min) pour garder streaks, scores et plan 30 jours.",
+    "guestBannerBody": "Sans compte, les sessions restent locales et disparaissent. Connectez-vous pour progresser vraiment.",
     "guestBannerCta": "Créer mon profil",
+    "guestLoginCta": "Se reconnecter",
     "personalizePlan": "Personnaliser mon plan 30 jours"
   },
   "Exercise": {
@@ -401,6 +402,12 @@
     "tipTitle": "Conseil pour la prochaine session",
     "transcriptTitle": "Transcription",
     "transcriptDemo": "Transcript de démo (Whisper non configuré ou pas de fichier).",
+    "demoModeTitle": "Mode démo — scores non personnalisés",
+    "demoModeBody": "Aucune clé AI (OPENAI_API_KEY) n'est configurée sur le serveur. Le feedback réutilise un transcript type et une grille heuristique — d'où des scores quasi identiques. Ajoutez la clé sur Vercel pour un vrai suivi.",
+    "notSavedTitle": "Session non enregistrée dans votre profil",
+    "notSavedBody": "Connectez-vous ou créez un compte pour conserver scores, streak et historique.",
+    "notSavedSignup": "Créer mon profil",
+    "notSavedLogin": "Se connecter",
     "postureTitle": "Posture caméra",
     "posture": {
       "alignment": "Alignement",

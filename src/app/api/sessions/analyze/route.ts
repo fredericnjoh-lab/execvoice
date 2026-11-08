@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { analyzeTranscript } from "@/lib/analysis/analyze-session";
 import { transcribeWithWhisper } from "@/lib/analysis/transcribe";
 import { getExerciseById } from "@/lib/exercises/get-exercise";
-import { createClient } from "@/lib/supabase/server";
+import { createRouteClient } from "@/lib/supabase/route-client";
 import type { PostureFeedback, SessionFeedback } from "@/lib/types/database";
 
 export const runtime = "nodejs";
@@ -115,15 +115,21 @@ export async function POST(request: Request) {
       Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
+    const aiConfigured = Boolean(
+      process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY
+    );
+
     let sessionId: string | null = null;
     let media_url: string | null = null;
     let persisted = false;
+    let authenticated = false;
 
     if (supabaseConfigured) {
-      const supabase = await createClient();
+      const supabase = await createRouteClient(request);
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      authenticated = Boolean(user);
 
       if (user) {
         // Optional media upload under user folder.
@@ -209,6 +215,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       persisted,
+      authenticated,
+      demo_mode: !aiConfigured || transcriptSource === "demo" || analysis.source === "heuristic",
+      ai_configured: aiConfigured,
       session_id: sessionId,
       transcript,
       transcript_source: transcriptSource,

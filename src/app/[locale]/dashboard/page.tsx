@@ -48,6 +48,7 @@ export default async function DashboardPage({
         guestBannerTitle: t("guestBannerTitle"),
         guestBannerBody: t("guestBannerBody"),
         guestBannerCta: t("guestBannerCta"),
+        guestLoginCta: t("guestLoginCta"),
         personalizePlan: t("personalizePlan"),
       }}
     />

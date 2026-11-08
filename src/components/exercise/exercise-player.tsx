@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { useMediaRecorder, type MediaKind } from "@/hooks/use-media-recorder";
 import { usePostureAnalyzer } from "@/hooks/use-posture-analyzer";
+import { createClient } from "@/lib/supabase/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { Exercise, PostureFeedback } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
@@ -198,9 +199,28 @@ export function ExercisePlayer({
           form.set("posture", JSON.stringify(posturePayload));
         }
 
+        const headers: HeadersInit = {};
+        try {
+          if (
+            process.env.NEXT_PUBLIC_SUPABASE_URL &&
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+          ) {
+            const supabase = createClient();
+            const {
+              data: { session },
+            } = await supabase.auth.getSession();
+            if (session?.access_token) {
+              headers.Authorization = `Bearer ${session.access_token}`;
+            }
+          }
+        } catch {
+          /* guest */
+        }
+
         const res = await fetch("/api/sessions/analyze", {
           method: "POST",
           body: form,
+          headers,
         });
         const data = await res.json();
         if (!res.ok) {
@@ -220,6 +240,14 @@ export function ExercisePlayer({
           );
         } catch {
           /* private mode */
+        }
+
+        if (!data.persisted && !data.authenticated) {
+          // Guest take — still show feedback, but progress won't stick.
+          sessionStorage.setItem(
+            "execvoice:needs-auth-to-save",
+            "1"
+          );
         }
 
         router.push(`/session/${data.session_id}`);

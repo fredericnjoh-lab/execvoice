@@ -22,6 +22,10 @@ export interface FeedbackPayload {
   feedback: SessionFeedback;
   analysis_source?: string;
   transcript_source?: string;
+  demo_mode?: boolean;
+  persisted?: boolean;
+  authenticated?: boolean;
+  ai_configured?: boolean;
   exercise?: { id: string; title: string; type: string };
 }
 
@@ -75,6 +79,38 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
           </p>
         ) : null}
       </section>
+
+      {data.demo_mode || data.transcript_source === "demo" || data.analysis_source === "heuristic" ? (
+        <Card className="border-amber-500/40 bg-amber-50 animate-fade-up">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-amber-900">
+              {t("demoModeTitle")}
+            </CardTitle>
+            <CardDescription className="text-amber-900/80">
+              {t("demoModeBody")}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : null}
+
+      {!data.persisted ? (
+        <Card className="border-gold/40 bg-gold/5 animate-fade-up">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-navy">
+              {t("notSavedTitle")}
+            </CardTitle>
+            <CardDescription>{t("notSavedBody")}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2 sm:flex-row">
+            <Button asChild variant="gold">
+              <Link href="/signup">{t("notSavedSignup")}</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/login">{t("notSavedLogin")}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
 
       {/* Axis scores */}
       <Card className="animate-fade-up [animation-delay:60ms]">

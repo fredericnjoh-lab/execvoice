@@ -39,6 +39,7 @@ interface DashboardViewProps {
     guestBannerTitle: string;
     guestBannerBody: string;
     guestBannerCta: string;
+    guestLoginCta: string;
     personalizePlan: string;
   };
 }
@@ -65,9 +66,12 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
             </CardTitle>
             <CardDescription>{labels.guestBannerBody}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-2 sm:flex-row">
             <Button asChild variant="gold" className="w-full sm:w-auto">
               <Link href="/signup">{labels.guestBannerCta}</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full sm:w-auto">
+              <Link href="/login">{labels.guestLoginCta}</Link>
             </Button>
           </CardContent>
         </Card>
