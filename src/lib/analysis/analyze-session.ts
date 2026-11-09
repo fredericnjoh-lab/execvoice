@@ -117,7 +117,7 @@ async function withAnthropic(input: {
   if (!process.env.ANTHROPIC_API_KEY) return null;
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const message = await client.messages.create({
-    model: process.env.ANTHROPIC_ANALYSIS_MODEL || "claude-sonnet-4-20250514",
+    model: process.env.ANTHROPIC_ANALYSIS_MODEL || "claude-sonnet-4-5",
     max_tokens: 4096,
     system: SESSION_ANALYSIS_SYSTEM,
     messages: [{ role: "user", content: SESSION_ANALYSIS_USER(input) }],

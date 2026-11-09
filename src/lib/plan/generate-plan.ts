@@ -99,7 +99,7 @@ async function generateWithAnthropic(
 
   const client = new Anthropic({ apiKey: key });
   const message = await client.messages.create({
-    model: process.env.ANTHROPIC_PLAN_MODEL || "claude-sonnet-4-20250514",
+    model: process.env.ANTHROPIC_PLAN_MODEL || "claude-sonnet-4-5",
     max_tokens: 8192,
     system: PLAN_GENERATION_SYSTEM,
     messages: [
