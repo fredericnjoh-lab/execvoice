@@ -202,11 +202,13 @@ export async function POST(request: Request) {
               ...feedback,
               analysis_source: analysis.source,
               transcript_source: transcriptSource,
+              demo_reason: demoReason,
               exercise_snapshot: {
                 id: exercise.id,
                 type: exercise.type,
                 title: exercise.title,
                 prompt: exercise.prompt,
+                language: exercise.language,
               },
             },
             duration_s,
@@ -241,6 +243,7 @@ export async function POST(request: Request) {
       openai_configured: openaiConfigured,
       anthropic_configured: anthropicConfigured,
       session_id: sessionId,
+      duration_s,
       transcript,
       transcript_source: transcriptSource,
       scores: analysis.scores,
@@ -251,6 +254,8 @@ export async function POST(request: Request) {
         id: exercise.id,
         title: exercise.title,
         type: exercise.type,
+        language: exercise.language,
+        prompt: exercise.prompt,
       },
     });
   } catch (err) {
