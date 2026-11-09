@@ -115,9 +115,18 @@ export async function POST(request: Request) {
       Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-    const aiConfigured = Boolean(
-      process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY
-    );
+    const openaiConfigured = Boolean(process.env.OPENAI_API_KEY);
+    const anthropicConfigured = Boolean(process.env.ANTHROPIC_API_KEY);
+    const aiConfigured = openaiConfigured || anthropicConfigured;
+
+    // Why coaching may still feel "fake" — never blame a missing key when one exists.
+    const demoReason: "no_ai" | "demo_transcript" | "heuristic" | null = !aiConfigured
+      ? "no_ai"
+      : transcriptSource === "demo"
+        ? "demo_transcript"
+        : analysis.source === "heuristic"
+          ? "heuristic"
+          : null;
 
     let sessionId: string | null = null;
     let media_url: string | null = null;
@@ -216,8 +225,11 @@ export async function POST(request: Request) {
       ok: true,
       persisted,
       authenticated,
-      demo_mode: !aiConfigured || transcriptSource === "demo" || analysis.source === "heuristic",
+      demo_mode: demoReason !== null,
+      demo_reason: demoReason,
       ai_configured: aiConfigured,
+      openai_configured: openaiConfigured,
+      anthropic_configured: anthropicConfigured,
       session_id: sessionId,
       transcript,
       transcript_source: transcriptSource,

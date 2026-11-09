@@ -401,9 +401,21 @@
     "ceoTitle": "Version CEO",
     "tipTitle": "Conseil pour la prochaine session",
     "transcriptTitle": "Transcription",
-    "transcriptDemo": "Transcript de démo (Whisper non configuré ou pas de fichier).",
-    "demoModeTitle": "Mode démo — scores non personnalisés",
-    "demoModeBody": "Aucune clé AI (OPENAI_API_KEY) n'est configurée sur le serveur. Le feedback réutilise un transcript type et une grille heuristique — d'où des scores quasi identiques. Ajoutez la clé sur Vercel pour un vrai suivi.",
+    "transcriptDemo": "Transcript de démo (Whisper indisponible : crédits manquants, upload vide ou pas de fichier).",
+    "demoBanner": {
+      "no_ai": {
+        "title": "Mode démo — aucune clé AI sur le serveur",
+        "body": "Ni OPENAI_API_KEY ni ANTHROPIC_API_KEY n'est configurée. Le feedback tombe sur un transcript type et une grille heuristique. Ajoutez les clés sur Vercel, puis redeployez."
+      },
+      "demo_transcript": {
+        "title": "Transcript type — votre voix n'a pas été transcrite",
+        "body": "Les clés AI sont bien présentes, mais Whisper n'a pas pu transcrire cet essai (souvent : compte OpenAI sans crédits, ou fichier audio vide). Les scores peuvent venir de Claude/GPT sur un texte fixe — ajoutez des crédits OpenAI pour un vrai coaching sur votre prise de parole."
+      },
+      "heuristic": {
+        "title": "Scoring heuristique (secours)",
+        "body": "L'analyse AI n'a pas renvoyé un score valide, une grille locale a été utilisée. Vérifiez l'accès aux modèles Anthropic/OpenAI et la facturation, puis réessayez."
+      }
+    },
     "notSavedTitle": "Session non enregistrée dans votre profil",
     "notSavedBody": "Connectez-vous ou créez un compte pour conserver scores, streak et historique.",
     "notSavedSignup": "Créer mon profil",

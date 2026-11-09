@@ -23,9 +23,12 @@ export interface FeedbackPayload {
   analysis_source?: string;
   transcript_source?: string;
   demo_mode?: boolean;
+  demo_reason?: "no_ai" | "demo_transcript" | "heuristic" | null;
   persisted?: boolean;
   authenticated?: boolean;
   ai_configured?: boolean;
+  openai_configured?: boolean;
+  anthropic_configured?: boolean;
   exercise?: { id: string; title: string; type: string };
 }
 
@@ -80,18 +83,31 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
         ) : null}
       </section>
 
-      {data.demo_mode || data.transcript_source === "demo" || data.analysis_source === "heuristic" ? (
-        <Card className="border-amber-500/40 bg-amber-50 animate-fade-up">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base text-amber-900">
-              {t("demoModeTitle")}
-            </CardTitle>
-            <CardDescription className="text-amber-900/80">
-              {t("demoModeBody")}
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      ) : null}
+      {(() => {
+        const reason =
+          data.demo_reason ??
+          (!data.ai_configured
+            ? "no_ai"
+            : data.transcript_source === "demo"
+              ? "demo_transcript"
+              : data.analysis_source === "heuristic"
+                ? "heuristic"
+                : null);
+        if (!reason && !data.demo_mode) return null;
+        const key = reason ?? "no_ai";
+        return (
+          <Card className="border-amber-500/40 bg-amber-50 animate-fade-up">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base text-amber-900">
+                {t(`demoBanner.${key}.title`)}
+              </CardTitle>
+              <CardDescription className="text-amber-900/80">
+                {t(`demoBanner.${key}.body`)}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        );
+      })()}
 
       {!data.persisted ? (
         <Card className="border-gold/40 bg-gold/5 animate-fade-up">
