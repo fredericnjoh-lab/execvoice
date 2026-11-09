@@ -141,6 +141,10 @@ export async function POST(request: Request) {
       authenticated = Boolean(user);
 
       if (user) {
+        // Accounts created before handle_new_user (or without it) have no
+        // profiles row — sessions_user_id_fkey then blocks every insert.
+        await ensureProfile(supabase, user);
+
         // Optional media upload under user folder.
         if (file instanceof Blob && file.size > 0) {
           const rawType = (file.type || "").toLowerCase();
@@ -252,6 +256,47 @@ export async function POST(request: Request) {
       },
       { status: 500 }
     );
+  }
+}
+
+async function ensureProfile(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }
+) {
+  try {
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (existing?.id) return;
+
+    const metaName =
+      typeof user.user_metadata?.name === "string"
+        ? user.user_metadata.name
+        : null;
+    const emailName = user.email?.includes("@")
+      ? user.email.split("@")[0]
+      : null;
+    const { error: profileErr } = await supabase.from("profiles").upsert({
+      id: user.id,
+      name: metaName || emailName || null,
+    });
+    if (profileErr) {
+      console.error("[ensureProfile] profiles", profileErr);
+      return;
+    }
+    const { error: streakErr } = await supabase.from("streaks").upsert({
+      user_id: user.id,
+      current: 0,
+      best: 0,
+    });
+    if (streakErr) {
+      console.error("[ensureProfile] streaks", streakErr);
+    }
+  } catch (err) {
+    console.error("[ensureProfile]", err);
   }
 }
 
