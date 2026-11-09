@@ -9,7 +9,15 @@ import { TimerRing } from "@/components/exercise/timer-ring";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
-import { useMediaRecorder, type MediaKind } from "@/hooks/use-media-recorder";
+import {
+  extensionForMime,
+  useMediaRecorder,
+  type MediaKind,
+} from "@/hooks/use-media-recorder";
+import {
+  blobWithoutCodecParameters,
+  selectAnalysisFile,
+} from "@/lib/analysis/upload-payload";
 import { usePostureAnalyzer } from "@/hooks/use-posture-analyzer";
 import { createClient } from "@/lib/supabase/client";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -39,6 +47,7 @@ export function ExercisePlayer({
   const recordedSecondsRef = useRef(0);
   const postureResultRef = useRef<PostureFeedback | null>(null);
   const recordedBlobRef = useRef<Blob | null>(null);
+  const speechBlobRef = useRef<Blob | null>(null);
 
   const prep = useCountdown(exercise.prep_s);
   const speak = useCountdown(exercise.duration_s);
@@ -81,9 +90,10 @@ export function ExercisePlayer({
     if (kind === "video") {
       postureResultRef.current = posture.stop();
     }
-    const file = await recorder.stop();
-    recordedBlobRef.current = file;
-    if (!file) {
+    const take = await recorder.stop();
+    recordedBlobRef.current = take.media;
+    speechBlobRef.current = take.speech;
+    if (!take.media && !take.speech) {
       setError(t("errors.emptyRecording"));
     }
     setPhase("review");
@@ -93,6 +103,7 @@ export function ExercisePlayer({
     setError(null);
     postureResultRef.current = null;
     recordedBlobRef.current = null;
+    speechBlobRef.current = null;
     posture.reset();
 
     if (!recorder.isSupported) {
@@ -126,6 +137,7 @@ export function ExercisePlayer({
     setError(null);
     recordedSecondsRef.current = 0;
     recordedBlobRef.current = null;
+    speechBlobRef.current = null;
     const started = await recorder.start();
     if (!started) {
       setError(t("errors.recorder"));
@@ -155,6 +167,7 @@ export function ExercisePlayer({
     posture.reset();
     postureResultRef.current = null;
     recordedBlobRef.current = null;
+    speechBlobRef.current = null;
     recorder.reset();
     prep.reset(exercise.prep_s);
     speak.reset(exercise.duration_s);
@@ -184,6 +197,13 @@ export function ExercisePlayer({
           upload = recordedBlobRef.current || recorder.blob;
         }
 
+        const speech = speechBlobRef.current;
+        const analysisFile = selectAnalysisFile({
+          kind,
+          media: upload,
+          speech,
+        });
+
         const form = new FormData();
         form.set("exercise_id", exercise.id);
         form.set(
@@ -191,9 +211,13 @@ export function ExercisePlayer({
           String(recordedSecondsRef.current || exercise.duration_s)
         );
         form.set("media_kind", kind);
-        if (upload && upload.size > 0) {
-          const ext = recorder.extension || (kind === "video" ? "webm" : "webm");
-          form.set("file", upload, `take.${ext}`);
+        if (analysisFile) {
+          const uploadBlob = blobWithoutCodecParameters(analysisFile);
+          const ext = extensionForMime(
+            uploadBlob.type,
+            speech && analysisFile === speech ? "audio" : kind
+          );
+          form.set("file", uploadBlob, `take.${ext}`);
         }
         if (kind === "video" && posturePayload) {
           form.set("posture", JSON.stringify(posturePayload));
@@ -217,14 +241,40 @@ export function ExercisePlayer({
           /* guest */
         }
 
-        const res = await fetch("/api/sessions/analyze", {
-          method: "POST",
-          body: form,
-          headers,
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data.message || t("errors.analyze"));
+        const postAnalyze = async (body: FormData) => {
+          const res = await fetch("/api/sessions/analyze", {
+            method: "POST",
+            body,
+            headers,
+          });
+          const raw = await res.text();
+          try {
+            return {
+              ok: res.ok,
+              data: JSON.parse(raw) as {
+                message?: string;
+                session_id?: string;
+                persisted?: boolean;
+                authenticated?: boolean;
+              },
+            };
+          } catch {
+            return { ok: false as const, data: null };
+          }
+        };
+
+        let { ok, data } = await postAnalyze(form);
+        // A rejected video body comes back as HTML, which used to surface
+        // as "Analysis failed". Retry once without the file so posture and
+        // the transcript fallback can still complete.
+        if ((!ok || !data) && form.has("file")) {
+          form.delete("file");
+          const retry = await postAnalyze(form);
+          ok = retry.ok;
+          data = retry.data;
+        }
+        if (!ok || !data) {
+          setError(data?.message || t("errors.analyze"));
           setPhase("review");
           return;
         }
@@ -238,16 +288,12 @@ export function ExercisePlayer({
             `execvoice:session:${data.session_id}`,
             JSON.stringify(data)
           );
+          if (!data.persisted && !data.authenticated) {
+            // Guest take — still show feedback, but progress won't stick.
+            sessionStorage.setItem("execvoice:needs-auth-to-save", "1");
+          }
         } catch {
           /* private mode */
-        }
-
-        if (!data.persisted && !data.authenticated) {
-          // Guest take — still show feedback, but progress won't stick.
-          sessionStorage.setItem(
-            "execvoice:needs-auth-to-save",
-            "1"
-          );
         }
 
         router.push(`/session/${data.session_id}`);

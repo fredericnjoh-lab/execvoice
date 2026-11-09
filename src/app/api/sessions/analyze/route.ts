@@ -67,13 +67,14 @@ export async function POST(request: Request) {
       : "whisper";
 
     if (!transcript && file instanceof Blob && file.size > 0) {
-      const rawType = (file.type || "").toLowerCase();
-      const ext = rawType.includes("mp4")
-        ? media_kind === "video"
-          ? "mp4"
-          : "m4a"
-        : rawType.includes("mpeg") || rawType.includes("mp3")
-          ? "mp3"
+      const rawType = (file.type || "").toLowerCase().split(";")[0].trim();
+      const audioFile = rawType.startsWith("audio/");
+      const ext = rawType.includes("mpeg") || rawType.includes("mp3")
+        ? "mp3"
+        : rawType.includes("mp4") || rawType.includes("m4a") || rawType.includes("aac")
+          ? audioFile || media_kind !== "video"
+            ? "m4a"
+            : "mp4"
           : "webm";
       const filename =
         (typeof (file as File).name === "string" && (file as File).name) ||
@@ -147,13 +148,15 @@ export async function POST(request: Request) {
 
         // Optional media upload under user folder.
         if (file instanceof Blob && file.size > 0) {
-          const rawType = (file.type || "").toLowerCase();
-          const ext = rawType.includes("mp4")
-            ? media_kind === "video"
-              ? "mp4"
-              : "m4a"
-            : "webm";
-          const contentType =
+          const rawType = (file.type || "").toLowerCase().split(";")[0].trim();
+          const audioFile = rawType.startsWith("audio/");
+          const ext =
+            rawType.includes("mp4") || rawType.includes("m4a") || rawType.includes("aac")
+              ? audioFile || media_kind !== "video"
+                ? "m4a"
+                : "mp4"
+              : "webm";
+          const contentType = (
             file.type ||
             (ext === "mp4"
               ? "video/mp4"
@@ -161,7 +164,10 @@ export async function POST(request: Request) {
                 ? "audio/mp4"
                 : media_kind === "video"
                   ? "video/webm"
-                  : "audio/webm");
+                  : "audio/webm")
+          )
+            .split(";")[0]
+            .trim();
           const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
           const { error: upErr } = await supabase.storage
             .from("session-media")

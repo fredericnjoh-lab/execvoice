@@ -11,10 +11,14 @@ export async function transcribeWithWhisper(
 ): Promise<string | null> {
   const key = process.env.OPENAI_API_KEY;
   if (!key) return null;
+  // Whisper rejects files over 25 MB. Skipping avoids buffering a camera take
+  // that would otherwise fail the whole request.
+  if (file.size > 24 * 1024 * 1024) return null;
 
   const client = new OpenAI({ apiKey: key });
+  const type = (file.type || "audio/webm").split(";")[0].trim() || "audio/webm";
   const upload = await toFile(Buffer.from(await file.arrayBuffer()), filename, {
-    type: file.type || "audio/webm",
+    type,
   });
 
   const result = await client.audio.transcriptions.create({
