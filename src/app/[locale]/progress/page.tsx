@@ -38,6 +38,18 @@ export default async function ProgressPage({
           confidence: tSession("axes.confidence"),
           impact: tSession("axes.impact"),
         },
+        milestonesTitle: t("milestonesTitle"),
+        milestonesSubtitle: t("milestonesSubtitle"),
+        milestonesNext: t("milestonesNext"),
+        milestonesDone: t("milestonesDone"),
+        milestoneNames: {
+          first: t("milestones.first"),
+          warmup: t("milestones.warmup"),
+          week1: t("milestones.week1"),
+          halfway: t("milestones.halfway"),
+          rhythm: t("milestones.rhythm"),
+          complete: t("milestones.complete"),
+        },
       }}
     />
   );

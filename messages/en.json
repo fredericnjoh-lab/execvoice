@@ -328,7 +328,19 @@
     "guestBannerBody": "Without an account, sessions stay local and disappear. Sign in to actually progress.",
     "guestBannerCta": "Create my profile",
     "guestLoginCta": "Log back in",
-    "personalizePlan": "Personalize my 30-day plan"
+    "personalizePlan": "Personalize my 30-day plan",
+    "milestonesTitle": "30-session track",
+    "milestonesSubtitle": "Milestones on your executive path",
+    "milestonesNext": "Next milestone: {name} — {n} to go",
+    "milestonesDone": "30-session program complete — keep the rhythm.",
+    "milestones": {
+      "first": "First take",
+      "warmup": "Warm-up",
+      "week1": "Week 1",
+      "halfway": "Halfway",
+      "rhythm": "Rhythm",
+      "complete": "Program"
+    }
   },
   "Exercise": {
     "title": "Exercise",
@@ -436,7 +448,19 @@
     "empty": "Complete a session to see your curves.",
     "sessions": "{n} sessions",
     "axisOverall": "Overall",
-    "demoBadge": "Demo"
+    "demoBadge": "Demo",
+    "milestonesTitle": "30-session track",
+    "milestonesSubtitle": "Reached milestones and next target",
+    "milestonesNext": "Next milestone: {name} — {n} to go",
+    "milestonesDone": "30-session program complete — keep the rhythm.",
+    "milestones": {
+      "first": "First take",
+      "warmup": "Warm-up",
+      "week1": "Week 1",
+      "halfway": "Halfway",
+      "rhythm": "Rhythm",
+      "complete": "Program"
+    }
   },
   "Settings": {
     "title": "Settings",

@@ -328,7 +328,19 @@
     "guestBannerBody": "Sans compte, les sessions restent locales et disparaissent. Connectez-vous pour progresser vraiment.",
     "guestBannerCta": "Créer mon profil",
     "guestLoginCta": "Se reconnecter",
-    "personalizePlan": "Personnaliser mon plan 30 jours"
+    "personalizePlan": "Personnaliser mon plan 30 jours",
+    "milestonesTitle": "Parcours 30 sessions",
+    "milestonesSubtitle": "Jalons de votre progression exécutive",
+    "milestonesNext": "Prochain jalon : {name} — encore {n}",
+    "milestonesDone": "Programme 30 sessions complété — continuez le rythme.",
+    "milestones": {
+      "first": "1ʳᵉ prise",
+      "warmup": "Échauffement",
+      "week1": "Semaine 1",
+      "halfway": "Mi-parcours",
+      "rhythm": "Rythme",
+      "complete": "Programme"
+    }
   },
   "Exercise": {
     "title": "Exercice",
@@ -436,7 +448,19 @@
     "empty": "Complétez une session pour voir vos courbes.",
     "sessions": "{n} sessions",
     "axisOverall": "Global",
-    "demoBadge": "Démo"
+    "demoBadge": "Démo",
+    "milestonesTitle": "Parcours 30 sessions",
+    "milestonesSubtitle": "Jalons atteints et prochain objectif",
+    "milestonesNext": "Prochain jalon : {name} — encore {n}",
+    "milestonesDone": "Programme 30 sessions complété — continuez le rythme.",
+    "milestones": {
+      "first": "1ʳᵉ prise",
+      "warmup": "Échauffement",
+      "week1": "Semaine 1",
+      "halfway": "Mi-parcours",
+      "rhythm": "Rythme",
+      "complete": "Programme"
+    }
   },
   "Settings": {
     "title": "Réglages",

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Logo } from "@/components/brand/logo";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthChrome } from "@/components/layout/auth-chrome";
+import { MilestoneTrack } from "@/components/progress/milestone-track";
 import { Sparkline } from "@/components/progress/sparkline";
 import {
   Card,
@@ -33,6 +34,11 @@ interface ProgressViewProps {
       overall: string;
     };
     demoBadge: string;
+    milestonesTitle: string;
+    milestonesSubtitle: string;
+    milestonesNext: string;
+    milestonesDone: string;
+    milestoneNames: Record<string, string>;
   };
 }
 
@@ -77,6 +83,18 @@ export function ProgressView({ data, labels }: ProgressViewProps) {
           {labels.sessions.replace("{n}", String(data.sessionsCompleted))}
         </p>
       </section>
+
+      <MilestoneTrack
+        className="mt-5 sm:mt-6 [animation-delay:40ms]"
+        progress={data.milestones}
+        labels={{
+          title: labels.milestonesTitle,
+          subtitle: labels.milestonesSubtitle,
+          nextLabel: labels.milestonesNext,
+          doneLabel: labels.milestonesDone,
+          milestoneNames: labels.milestoneNames,
+        }}
+      />
 
       {data.axisHistory.length === 0 ? (
         <Card className="mt-8">

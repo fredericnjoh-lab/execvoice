@@ -50,6 +50,18 @@ export default async function DashboardPage({
         guestBannerCta: t("guestBannerCta"),
         guestLoginCta: t("guestLoginCta"),
         personalizePlan: t("personalizePlan"),
+        milestonesTitle: t("milestonesTitle"),
+        milestonesSubtitle: t("milestonesSubtitle"),
+        milestonesNext: t("milestonesNext"),
+        milestonesDone: t("milestonesDone"),
+        milestoneNames: {
+          first: t("milestones.first"),
+          warmup: t("milestones.warmup"),
+          week1: t("milestones.week1"),
+          halfway: t("milestones.halfway"),
+          rhythm: t("milestones.rhythm"),
+          complete: t("milestones.complete"),
+        },
       }}
     />
   );

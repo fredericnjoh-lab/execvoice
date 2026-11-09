@@ -2,6 +2,10 @@ import { differenceInCalendarDays, parseISO, format } from "date-fns";
 import { getExerciseById, listExercises } from "@/lib/exercises/get-exercise";
 import { exercisesFromSeed } from "@/lib/seed/as-exercises";
 import { createClient } from "@/lib/supabase/server";
+import {
+  computeMilestoneProgress,
+  type MilestoneProgress,
+} from "@/lib/progress/milestones";
 import type {
   AppLanguage,
   Exercise,
@@ -34,6 +38,7 @@ export interface DashboardData {
   >;
   axisHistory: AxisPoint[];
   sessionsCompleted: number;
+  milestones: MilestoneProgress;
 }
 
 const EMPTY_STREAK: Streak = {
@@ -107,6 +112,7 @@ async function demoDashboard(language: AppLanguage): Promise<DashboardData> {
     recentSessions: [],
     axisHistory: [],
     sessionsCompleted: 0,
+    milestones: computeMilestoneProgress(0),
   };
 }
 
@@ -140,6 +146,7 @@ export async function getDashboardData(
       { data: streak },
       { data: plan },
       { data: sessions },
+      { count: sessionCount },
     ] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
       supabase.from("streaks").select("*").eq("user_id", user.id).maybeSingle(),
@@ -150,9 +157,14 @@ export async function getDashboardData(
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(30),
+      supabase
+        .from("sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id),
     ]);
 
     const typedSessions = (sessions as Session[] | null) ?? [];
+    const sessionsCompleted = sessionCount ?? typedSessions.length;
     const typedPlan = plan as Plan | null;
     const typedProfile = profile as Profile | null;
     const lang = typedProfile?.language ?? language;
@@ -229,7 +241,8 @@ export async function getDashboardData(
       axisAverages,
       recentSessions,
       axisHistory,
-      sessionsCompleted: typedSessions.length,
+      sessionsCompleted,
+      milestones: computeMilestoneProgress(sessionsCompleted),
     };
   } catch (err) {
     console.error("[getDashboardData]", err);

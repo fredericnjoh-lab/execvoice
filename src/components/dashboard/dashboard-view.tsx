@@ -4,6 +4,7 @@ import { AxisBars } from "@/components/dashboard/axis-bars";
 import { Logo } from "@/components/brand/logo";
 import { AppShell } from "@/components/layout/app-shell";
 import { AuthChrome } from "@/components/layout/auth-chrome";
+import { MilestoneTrack } from "@/components/progress/milestone-track";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,6 +42,11 @@ interface DashboardViewProps {
     guestBannerCta: string;
     guestLoginCta: string;
     personalizePlan: string;
+    milestonesTitle: string;
+    milestonesSubtitle: string;
+    milestonesNext: string;
+    milestonesDone: string;
+    milestoneNames: Record<string, string>;
   };
 }
 
@@ -121,6 +127,18 @@ export function DashboardView({ data, labels }: DashboardViewProps) {
           }
         />
       </section>
+
+      <MilestoneTrack
+        className="mt-5 sm:mt-6 [animation-delay:90ms]"
+        progress={data.milestones}
+        labels={{
+          title: labels.milestonesTitle,
+          subtitle: labels.milestonesSubtitle,
+          nextLabel: labels.milestonesNext,
+          doneLabel: labels.milestonesDone,
+          milestoneNames: labels.milestoneNames,
+        }}
+      />
 
       <Card className="mt-5 animate-fade-up [animation-delay:120ms] border-gold/25 sm:mt-6">
         <CardHeader className="pb-2">
