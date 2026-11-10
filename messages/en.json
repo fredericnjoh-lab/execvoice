@@ -417,7 +417,7 @@
     "demoBanner": {
       "no_ai": {
         "title": "Demo mode — no AI key on the server",
-        "body": "Neither OPENAI_API_KEY nor ANTHROPIC_API_KEY is configured. Feedback falls back to a stock transcript and a heuristic grid. Add the keys on Vercel, then redeploy."
+        "body": "Neither OPENAI_API_KEY nor ANTHROPIC_API_KEY is set on this server. Feedback uses a stock transcript and a local score. Add OPENAI_API_KEY (voice and scoring) or ANTHROPIC_API_KEY (scoring) as a Cloud Agent secret, then start a new agent. A key added after this agent booted stays invisible to the server already running."
       },
       "demo_transcript": {
         "title": "Stock transcript — your voice was not transcribed",

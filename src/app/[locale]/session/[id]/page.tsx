@@ -23,7 +23,7 @@ export default async function SessionPage({
       const supabase = await createClient();
       const { data } = await supabase
         .from("sessions")
-        .select("*, exercises(id, title, type)")
+        .select("*, exercises(id, title, type, language, prompt)")
         .eq("id", id)
         .maybeSingle();
 
@@ -31,10 +31,23 @@ export default async function SessionPage({
         const fb = data.feedback as SessionFeedback & {
           analysis_source?: string;
           transcript_source?: string;
-          exercise_snapshot?: { id: string; title: string; type: string };
+          demo_reason?: FeedbackPayload["demo_reason"];
+          exercise_snapshot?: {
+            id: string;
+            title: string;
+            type: string;
+            language?: string;
+            prompt?: string;
+          };
         };
         const exJoin = data.exercises as
-          | { id: string; title: string; type: string }
+          | {
+              id: string;
+              title: string;
+              type: string;
+              language?: string;
+              prompt?: string;
+            }
           | null
           | undefined;
 
@@ -43,8 +56,19 @@ export default async function SessionPage({
           transcript: data.transcript,
           scores: data.scores as SessionScores,
           feedback: fb,
+          duration_s: data.duration_s ?? undefined,
           analysis_source: fb.analysis_source,
           transcript_source: fb.transcript_source,
+          demo_reason: fb.demo_reason,
+          demo_mode: Boolean(fb.demo_reason),
+          // The row exists only for the signed-in owner, so this reload is saved.
+          persisted: true,
+          authenticated: true,
+          ai_configured: fb.analysis_source === "openai" || fb.analysis_source === "anthropic"
+            ? true
+            : fb.demo_reason === "no_ai"
+              ? false
+              : undefined,
           exercise: exJoin ?? fb.exercise_snapshot,
         };
       }

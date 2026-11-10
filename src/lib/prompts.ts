@@ -67,21 +67,22 @@ Transcript:
 ${input.transcript}
 """
 
-Return JSON:
+Return JSON with this shape. Replace every sample value with your real assessment of THIS transcript.
+Speech that is not empty must not be scored 0. Do not copy the sample numbers, the word "string", or a count of 0.
 {
   "scores": {
-    "clarity": 0,
-    "structure": 0,
-    "concision": 0,
-    "vocabulary": 0,
-    "confidence": 0,
-    "impact": 0,
-    "overall": 0
+    "clarity": 72,
+    "structure": 68,
+    "concision": 74,
+    "vocabulary": 70,
+    "confidence": 66,
+    "impact": 71,
+    "overall": 70
   },
-  "filler_words": [{ "word": "string", "count": 0 }],
-  "wpm": 0,
+  "filler_words": [{ "word": "euh", "count": 2 }],
+  "wpm": 142,
   "wpm_target": [130, 160],
-  "weak_words": [{ "original": "string", "suggestion": "string" }],
-  "ceo_rewrite": "string",
-  "tip": "string"
+  "weak_words": [{ "original": "je pense que", "suggestion": "Je suis convaincu que" }],
+  "ceo_rewrite": "One tight CEO version of the transcript.",
+  "tip": "One concrete next-session instruction."
 }`;

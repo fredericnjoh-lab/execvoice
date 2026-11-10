@@ -16,7 +16,29 @@ function extractJson(text: string): unknown {
   return JSON.parse(fence?.[1]?.trim() ?? trimmed);
 }
 
-function isValidAnalysis(data: unknown): data is {
+const SCORE_KEYS = [
+  "clarity",
+  "structure",
+  "concision",
+  "vocabulary",
+  "confidence",
+  "impact",
+  "overall",
+] as const;
+
+function asFinite(value: unknown): number | null {
+  const n = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+  if (!Number.isFinite(n)) return null;
+  return n;
+}
+
+function asScore(value: unknown): number | null {
+  const n = asFinite(value);
+  if (n == null) return null;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+export function isValidAnalysis(data: unknown): data is {
   scores: SessionScores;
   filler_words: SessionFeedback["filler_words"];
   wpm: number;
@@ -29,23 +51,22 @@ function isValidAnalysis(data: unknown): data is {
   const o = data as Record<string, unknown>;
   if (!o.scores || typeof o.scores !== "object") return false;
   const s = o.scores as Record<string, unknown>;
-  const keys = [
-    "clarity",
-    "structure",
-    "concision",
-    "vocabulary",
-    "confidence",
-    "impact",
-    "overall",
-  ];
-  if (!keys.every((k) => typeof s[k] === "number")) return false;
-  return (
-    typeof o.wpm === "number" &&
-    typeof o.ceo_rewrite === "string" &&
-    typeof o.tip === "string" &&
-    Array.isArray(o.filler_words) &&
-    Array.isArray(o.weak_words)
-  );
+  const scores = SCORE_KEYS.map((k) => asScore(s[k]));
+  if (scores.some((n) => n == null)) return false;
+  // The prompt used to ship an all-zero example. Models echo it and the
+  // page shows 0/100 even though the call succeeded.
+  if (scores.every((n) => n === 0)) return false;
+  for (let i = 0; i < SCORE_KEYS.length; i++) s[SCORE_KEYS[i]] = scores[i];
+
+  const wpm = asFinite(o.wpm);
+  if (wpm == null || typeof o.ceo_rewrite !== "string" || typeof o.tip !== "string") {
+    return false;
+  }
+  if (!o.ceo_rewrite.trim() || o.ceo_rewrite.trim() === "string") return false;
+  if (!o.tip.trim() || o.tip.trim() === "string") return false;
+  if (!Array.isArray(o.filler_words) || !Array.isArray(o.weak_words)) return false;
+  o.wpm = wpm;
+  return true;
 }
 
 function toResult(

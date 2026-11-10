@@ -417,7 +417,7 @@
     "demoBanner": {
       "no_ai": {
         "title": "Mode démo — aucune clé AI sur le serveur",
-        "body": "Ni OPENAI_API_KEY ni ANTHROPIC_API_KEY n'est configurée. Le feedback tombe sur un transcript type et une grille heuristique. Ajoutez les clés sur Vercel, puis redeployez."
+        "body": "Ni OPENAI_API_KEY ni ANTHROPIC_API_KEY n'est présente sur ce serveur. Le feedback utilise un transcript type et une note locale. Ajoutez OPENAI_API_KEY (voix et score) ou ANTHROPIC_API_KEY (score) dans les secrets de l'environnement Cloud Agent, puis lancez un nouvel agent. Une clé ajoutée après le démarrage de cet agent reste invisible."
       },
       "demo_transcript": {
         "title": "Transcript type — votre voix n'a pas été transcrite",

@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
+import { presentFeedback, resolveDemoReason } from "@/lib/analysis/present-feedback";
 import type { SessionFeedback, SessionScores } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,8 @@ export interface FeedbackPayload {
   ai_configured?: boolean;
   openai_configured?: boolean;
   anthropic_configured?: boolean;
-  exercise?: { id: string; title: string; type: string };
+  duration_s?: number;
+  exercise?: { id: string; title: string; type: string; language?: string; prompt?: string };
 }
 
 const AXES: (keyof Omit<SessionScores, "overall">)[] = [
@@ -47,8 +49,9 @@ function scoreColor(n: number) {
   return "text-amber-700";
 }
 
-export function FeedbackView({ data }: { data: FeedbackPayload }) {
+export function FeedbackView({ data: raw }: { data: FeedbackPayload }) {
   const t = useTranslations("Session");
+  const data = presentFeedback(raw);
   const { scores, feedback, transcript, exercise } = data;
   const [low, high] = feedback.wpm_target;
   const inBand = feedback.wpm >= low && feedback.wpm <= high;
@@ -84,17 +87,9 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
       </section>
 
       {(() => {
-        const reason =
-          data.demo_reason ??
-          (!data.ai_configured
-            ? "no_ai"
-            : data.transcript_source === "demo"
-              ? "demo_transcript"
-              : data.analysis_source === "heuristic"
-                ? "heuristic"
-                : null);
-        if (!reason && !data.demo_mode) return null;
-        const key = reason ?? "no_ai";
+        const reason = resolveDemoReason(data);
+        if (!reason) return null;
+        const key = reason;
         return (
           <Card className="border-amber-500/40 bg-amber-50 animate-fade-up">
             <CardHeader className="pb-2">
