@@ -372,6 +372,7 @@
     "errors": {
       "permission": "Autorisez le micro / la caméra pour continuer.",
       "analyze": "Analyse impossible. Réessayez.",
+      "tooLarge": "L'enregistrement est trop lourd pour le serveur. Réessayez : la voix part seule si la vidéo dépasse la limite.",
       "unsupported": "Enregistrement non supporté sur ce navigateur. Essayez Chrome ou Safari récent.",
       "recorder": "L'enregistrement a échoué. Réessayez ou passez en audio.",
       "emptyRecording": "Aucun média capturé. Vérifiez micro/caméra et réessayez."

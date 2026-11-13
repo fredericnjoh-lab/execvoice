@@ -196,6 +196,7 @@ export async function POST(request: Request) {
               ...feedback,
               analysis_source: analysis.source,
               transcript_source: transcriptSource,
+              demo_reason: demoReason,
               exercise_snapshot: {
                 id: exercise.id,
                 type: exercise.type,

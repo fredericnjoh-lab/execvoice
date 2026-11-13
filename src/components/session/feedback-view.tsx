@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
+import { resolveDemoBanner } from "@/lib/analysis/demo-banner";
 import type { SessionFeedback, SessionScores } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
@@ -84,17 +85,8 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
       </section>
 
       {(() => {
-        const reason =
-          data.demo_reason ??
-          (!data.ai_configured
-            ? "no_ai"
-            : data.transcript_source === "demo"
-              ? "demo_transcript"
-              : data.analysis_source === "heuristic"
-                ? "heuristic"
-                : null);
-        if (!reason && !data.demo_mode) return null;
-        const key = reason ?? "no_ai";
+        const key = resolveDemoBanner(data);
+        if (!key) return null;
         return (
           <Card className="border-amber-500/40 bg-amber-50 animate-fade-up">
             <CardHeader className="pb-2">
@@ -109,7 +101,7 @@ export function FeedbackView({ data }: { data: FeedbackPayload }) {
         );
       })()}
 
-      {!data.persisted ? (
+      {data.persisted === false ? (
         <Card className="border-gold/40 bg-gold/5 animate-fade-up">
           <CardHeader className="pb-2">
             <CardTitle className="text-base text-navy">

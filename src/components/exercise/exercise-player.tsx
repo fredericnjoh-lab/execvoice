@@ -9,7 +9,7 @@ import { TimerRing } from "@/components/exercise/timer-ring";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
-import { useMediaRecorder, type MediaKind } from "@/hooks/use-media-recorder";
+import { useMediaRecorder, UPLOAD_BYTE_LIMIT, type MediaKind } from "@/hooks/use-media-recorder";
 import { usePostureAnalyzer } from "@/hooks/use-posture-analyzer";
 import { createClient } from "@/lib/supabase/client";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -192,8 +192,25 @@ export function ExercisePlayer({
         );
         form.set("media_kind", kind);
         if (upload && upload.size > 0) {
-          const ext = recorder.extension || (kind === "video" ? "webm" : "webm");
-          form.set("file", upload, `take.${ext}`);
+          const speech = recorder.getSpeechBlob();
+          const videoTooLarge = kind === "video" && upload.size > UPLOAD_BYTE_LIMIT;
+          const speechOk =
+            speech && speech.size > 0 && speech.size <= UPLOAD_BYTE_LIMIT;
+          const fileToSend = videoTooLarge ? (speechOk ? speech : null) : upload;
+          if (!fileToSend) {
+            setError(t("errors.tooLarge"));
+            setPhase("review");
+            return;
+          }
+          const rawType = (fileToSend.type || "").toLowerCase();
+          const ext = rawType.includes("mp4") || rawType.includes("aac")
+            ? kind === "video" && !videoTooLarge
+              ? "mp4"
+              : "m4a"
+            : rawType.includes("mpeg") || rawType.includes("mp3")
+              ? "mp3"
+              : recorder.extension || "webm";
+          form.set("file", fileToSend, `take.${ext}`);
         }
         if (kind === "video" && posturePayload) {
           form.set("posture", JSON.stringify(posturePayload));
@@ -222,9 +239,15 @@ export function ExercisePlayer({
           body: form,
           headers,
         });
-        const data = await res.json();
+        const raw = await res.text();
+        let data: { message?: string; session_id?: string; persisted?: boolean; authenticated?: boolean } = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch {
+          data = {};
+        }
         if (!res.ok) {
-          setError(data.message || t("errors.analyze"));
+          setError(res.status === 413 ? t("errors.tooLarge") : data.message || t("errors.analyze"));
           setPhase("review");
           return;
         }
