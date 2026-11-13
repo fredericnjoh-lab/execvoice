@@ -15,6 +15,8 @@ interface UseMediaRecorderResult {
   blob: Blob | null;
   previewUrl: string | null;
   mimeType: string | null;
+  /** Audio-only copy of a video take, small enough to transcribe. */
+  getSpeechBlob: () => Blob | null;
   /** File extension matching the recorded mime (webm | mp4 | m4a). */
   extension: string;
   start: () => Promise<boolean>;
@@ -55,6 +57,24 @@ function pickMimeType(kind: MediaKind): string | undefined {
   });
 }
 
+/** Stay under the Vercel serverless body limit (4.5 MB) after multipart overhead. */
+export const UPLOAD_BYTE_LIMIT = 3_500_000;
+
+const VIDEO_BITS_PER_SECOND = 200_000;
+const AUDIO_BITS_PER_SECOND = 64_000;
+
+function pickAudioMime(): string | undefined {
+  const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/aac"];
+  if (typeof MediaRecorder === "undefined") return undefined;
+  return candidates.find((t) => {
+    try {
+      return MediaRecorder.isTypeSupported(t);
+    } catch {
+      return false;
+    }
+  });
+}
+
 function extensionForMime(mime: string | null | undefined, kind: MediaKind): string {
   const m = (mime || "").toLowerCase();
   if (m.includes("mp4") || m.includes("avc") || m.includes("aac")) {
@@ -78,7 +98,10 @@ export function useMediaRecorder({
   const [mimeType, setMimeType] = useState<string | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
+  const audioRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
+  const audioChunksRef = useRef<BlobPart[]>([]);
+  const speechBlobRef = useRef<Blob | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const stopResolverRef = useRef<((blob: Blob | null) => void) | null>(null);
   const kindRef = useRef(kind);
@@ -104,7 +127,17 @@ export function useMediaRecorder({
       }
     }
     recorderRef.current = null;
+    if (audioRecorderRef.current && audioRecorderRef.current.state !== "inactive") {
+      try {
+        audioRecorderRef.current.stop();
+      } catch {
+        /* ignore */
+      }
+    }
+    audioRecorderRef.current = null;
     chunksRef.current = [];
+    audioChunksRef.current = [];
+    speechBlobRef.current = null;
     if (stopResolverRef.current) {
       stopResolverRef.current(null);
       stopResolverRef.current = null;
@@ -202,14 +235,27 @@ export function useMediaRecorder({
 
     const mime = pickMimeType(kind);
     chunksRef.current = [];
+    audioChunksRef.current = [];
+    speechBlobRef.current = null;
 
     try {
-      const recorder = mime
-        ? new MediaRecorder(media, {
-            mimeType: mime,
-            videoBitsPerSecond: kind === "video" ? 2_500_000 : undefined,
-          })
-        : new MediaRecorder(media);
+      const recorderOptions: MediaRecorderOptions = {};
+      if (mime) recorderOptions.mimeType = mime;
+      if (kind === "video") {
+        recorderOptions.videoBitsPerSecond = VIDEO_BITS_PER_SECOND;
+        recorderOptions.audioBitsPerSecond = AUDIO_BITS_PER_SECOND;
+      } else {
+        recorderOptions.audioBitsPerSecond = AUDIO_BITS_PER_SECOND;
+      }
+      let recorder: MediaRecorder;
+      try {
+        recorder = new MediaRecorder(
+          media,
+          Object.keys(recorderOptions).length > 0 ? recorderOptions : undefined
+        );
+      } catch {
+        recorder = mime ? new MediaRecorder(media, { mimeType: mime }) : new MediaRecorder(media);
+      }
       const resolvedMime =
         recorder.mimeType || mime || (kind === "video" ? "video/webm" : "audio/webm");
       setMimeType(resolvedMime);
@@ -245,6 +291,36 @@ export function useMediaRecorder({
       };
 
       recorderRef.current = recorder;
+
+      if (kind === "video") {
+        const audioTracks = media.getAudioTracks();
+        if (audioTracks.length > 0) {
+          try {
+            const audioMime = pickAudioMime();
+            const audioOptions: MediaRecorderOptions = {
+              audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
+            };
+            if (audioMime) audioOptions.mimeType = audioMime;
+            const audioRecorder = new MediaRecorder(new MediaStream(audioTracks), audioOptions);
+            audioRecorder.ondataavailable = (e) => {
+              if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+            };
+            audioRecorder.onstop = () => {
+              const type = audioRecorder.mimeType || audioMime || "audio/webm";
+              speechBlobRef.current =
+                audioChunksRef.current.length > 0
+                  ? new Blob(audioChunksRef.current, { type })
+                  : null;
+            };
+            audioRecorderRef.current = audioRecorder;
+            audioRecorder.start(1000);
+          } catch (err) {
+            console.error("[recorder] audio", err);
+            audioRecorderRef.current = null;
+          }
+        }
+      }
+
       // Timeslice keeps Safari/Chrome flushing chunks; 1000ms is safer than 250 on mobile.
       recorder.start(1000);
       setStatus("recording");
@@ -259,11 +335,39 @@ export function useMediaRecorder({
 
   const stop = useCallback((): Promise<Blob | null> => {
     const recorder = recorderRef.current;
+    const audioRecorder = audioRecorderRef.current;
+    const audioStopped =
+      audioRecorder && audioRecorder.state !== "inactive"
+        ? new Promise<void>((resolve) => {
+            let settled = false;
+            const finish = () => {
+              if (settled) return;
+              settled = true;
+              if (!speechBlobRef.current && audioChunksRef.current.length > 0) {
+                const type = audioRecorder.mimeType || "audio/webm";
+                speechBlobRef.current = new Blob(audioChunksRef.current, { type });
+              }
+              resolve();
+            };
+            audioRecorder.addEventListener("stop", finish, { once: true });
+            window.setTimeout(finish, 2500);
+            try {
+              if (audioRecorder.state === "recording") audioRecorder.requestData();
+            } catch {
+              /* optional */
+            }
+            try {
+              audioRecorder.stop();
+            } catch {
+              finish();
+            }
+          })
+        : Promise.resolve();
     if (!recorder || recorder.state === "inactive") {
-      return Promise.resolve(blob);
+      return audioStopped.then(() => blob);
     }
 
-    return new Promise<Blob | null>((resolve) => {
+    const videoStopped = new Promise<Blob | null>((resolve) => {
       stopResolverRef.current = resolve;
       try {
         if (recorder.state === "recording") {
@@ -300,6 +404,7 @@ export function useMediaRecorder({
         }
       }, 2500);
     });
+    return Promise.all([videoStopped, audioStopped]).then(([file]) => file);
   }, [blob, mimeType]);
 
   return {
@@ -309,6 +414,7 @@ export function useMediaRecorder({
     blob,
     previewUrl,
     mimeType,
+    getSpeechBlob: () => speechBlobRef.current,
     extension: extensionForMime(mimeType, kind),
     start,
     stop,
